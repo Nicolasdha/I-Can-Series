@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import * as serviceWorkerRegistration from "./serviceWorker/serviceWorkerRegistration";
 import reportWebVitals from "./analytics/reportWebVitals";
 
-import "./styles/index.css";
+import "./styles/styles.scss";
 import AppRouter, { history } from "./routers/AppRouter";
 import configureStore from "./store/configureStore";
 

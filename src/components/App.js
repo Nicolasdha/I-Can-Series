@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import logo from "../images/logo.svg";
-import "../styles/App.css";
+// import "../styles/App.css";
 
 const App = () => (
   <div className="App">
