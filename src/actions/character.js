@@ -18,3 +18,14 @@ export const setActiveCharacter = (activeCharacter) => {
     activeCharacter,
   };
 };
+
+export const editCharacter = (nickname, updates) => {
+  console.log("EDIT CHAR fire ");
+  console.log("nickname", nickname);
+  console.log("updates", updates);
+  return {
+    type: "EDIT_CHARACTER",
+    nickname,
+    updates,
+  };
+};

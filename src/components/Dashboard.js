@@ -11,7 +11,12 @@ function Dashboard(props) {
       <Link to="/characterSelection"> Create character</Link>
 
       {props.characters.map((each, index) => (
-        <Character character={each} key={index} />
+        <>
+          <Character key={index} character={each} />
+          <Link to={`/edit/${each.nickname}`}>
+            <button key={index + 100}>Edit</button>
+          </Link>
+        </>
       ))}
 
       <Link to="/purchase">
@@ -25,6 +30,7 @@ function Dashboard(props) {
 
 const mapStoreToProps = (state, props) => ({
   characters: state.character,
+  // match: state.character.find((each) => each.nickname === )
 });
 
 export default connect(mapStoreToProps, undefined)(Dashboard);

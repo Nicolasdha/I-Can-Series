@@ -15,6 +15,7 @@ import CharacterSelection from "../components/CharacterSelection";
 import BookSelection from "../components/BookSelection";
 import Purchase from "../components/Purchase";
 import Payment from "../components/Payment";
+import EditCharacter from "../components/EditCharacter";
 
 // -------------------- TIME FOR SLEEP ----------
 //Book 1
@@ -71,6 +72,7 @@ const AppRouter = (
         <Route exact={true} path="/" component={App} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/login" component={Login} />
+        <Route path="/edit/:nickname" component={EditCharacter} />
         <Route path="/characterSelection" component={CharacterSelection} />
         <Route path="/bookSelection" component={BookSelection} />
         <Route path="/purchase" component={Purchase} />
