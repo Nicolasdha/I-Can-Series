@@ -6,7 +6,6 @@ import { setActiveCharacter } from "../actions/character";
 
 const Character = ({ character, setActiveCharacter }) => {
   const setActiveCharacterClick = (e) => {
-    console.log(character);
     setActiveCharacter(character);
     // history.push("/BookSelection");
   };

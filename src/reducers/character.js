@@ -1,14 +1,12 @@
-const defaultState = [];
-
-export default (state = defaultState, action) => {
+export default (state = [], action) => {
   console.log("Character action", action);
   console.log("Character state", state);
   switch (action.type) {
+    case "SET_CHARACTER":
+      return [...state, action.character];
     case "EDIT_CHARACTER":
-      console.log("EDIT");
       return state.map((each) => {
-        console.log("peeeeep");
-        if (each.nickname === action.nickname) {
+        if (each.id === action.updates.id) {
           return {
             ...each,
             ...action.updates,
@@ -17,12 +15,7 @@ export default (state = defaultState, action) => {
           return each;
         }
       });
-    case "SET_CHARACTER":
-      console.log("FUCK ME");
-
-      return [...state, action.character];
     case "SET_ACTIVE_CHARACTER":
-      console.log("FUCK YOU");
       state.activeCharacter = action.activeCharacter;
       return [...state];
     default:

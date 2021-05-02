@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import Character from "./Character";
 
 function Dashboard(props) {
-  console.log("character", props.characters);
   return (
     <div>
       <h1>Dashboard</h1>
@@ -30,7 +29,6 @@ function Dashboard(props) {
 
 const mapStoreToProps = (state, props) => ({
   characters: state.character,
-  // match: state.character.find((each) => each.nickname === )
 });
 
 export default connect(mapStoreToProps, undefined)(Dashboard);

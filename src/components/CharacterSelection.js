@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 import { connect } from "react-redux";
 import { setCharacter, editCharacter } from "../actions/character";
 import { Link } from "react-router-dom";
 
-const CharacterSelection = ({ match, setCharacter }) => {
+const CharacterSelection = ({ match, setCharacter, editCharacter }) => {
   const history = useHistory();
 
   const [gender, setGender] = useState(match.gender);
@@ -17,14 +18,14 @@ const CharacterSelection = ({ match, setCharacter }) => {
     e.preventDefault();
     if (gender && ethnicity && passion && nickname) {
       if (match.gender) {
-        editCharacter(nickname, {
+        editCharacter({
           gender,
           ethnicity,
           passion,
           nickname,
+          id: match.id,
         });
         history.push("/dashboard");
-
         return;
       }
       setCharacter({
@@ -32,6 +33,7 @@ const CharacterSelection = ({ match, setCharacter }) => {
         ethnicity,
         passion,
         nickname,
+        id: uuidv4(),
       });
       history.push("/dashboard");
     }
@@ -95,16 +97,12 @@ const CharacterSelection = ({ match, setCharacter }) => {
           <option value="dolls">Dolls</option>
         </select>
 
-        {/* Prefill value with nickname if editing character */}
-
         <input
           onChange={nicknameChange}
           value={nickname}
           placeholder="Choose Nickname"
         />
-        <button onClick={() => {}} type="submit">
-          Submit
-        </button>
+        <button type="submit">Submit</button>
       </form>
     </div>
   );
@@ -112,8 +110,7 @@ const CharacterSelection = ({ match, setCharacter }) => {
 
 const mapDispatchToProps = (dispatch) => ({
   setCharacter: (character) => dispatch(setCharacter(character)),
-  editCharacter: (nickname, updates) =>
-    dispatch(editCharacter(nickname, updates)),
+  editCharacter: (updates) => dispatch(editCharacter(updates)),
 });
 
 export default connect(undefined, mapDispatchToProps)(CharacterSelection);

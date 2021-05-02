@@ -1,4 +1,4 @@
-export const setCharacter = ({ gender, ethnicity, passion, nickname }) => {
+export const setCharacter = ({ gender, ethnicity, passion, nickname, id }) => {
   console.log("setCharacter action fire");
   return {
     type: "SET_CHARACTER",
@@ -7,6 +7,7 @@ export const setCharacter = ({ gender, ethnicity, passion, nickname }) => {
       ethnicity,
       passion,
       nickname,
+      id,
     },
   };
 };
@@ -19,13 +20,10 @@ export const setActiveCharacter = (activeCharacter) => {
   };
 };
 
-export const editCharacter = (nickname, updates) => {
+export const editCharacter = (updates) => {
   console.log("EDIT CHAR fire ");
-  console.log("nickname", nickname);
-  console.log("updates", updates);
   return {
     type: "EDIT_CHARACTER",
-    nickname,
     updates,
   };
 };
