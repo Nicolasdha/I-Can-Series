@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import App from "../components/App";
+import Header from "../components/Header";
 import NotFoundPage from "../components/404";
 import Dashboard from "../components/Dashboard";
 import Login from "../components/Login";
@@ -68,6 +69,7 @@ const AppRouter = (
   // Need <Router history={history}/> here but idk why
   <BrowserRouter>
     <div>
+      <Header />
       <Switch>
         <Route exact={true} path="/" component={App} />
         <Route path="/dashboard" component={Dashboard} />

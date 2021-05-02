@@ -4,3 +4,9 @@ export const login = (uid) => {
     uid,
   };
 };
+
+export const logout = () => {
+  return {
+    type: "LOGOUT",
+  };
+};

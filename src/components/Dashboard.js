@@ -9,14 +9,17 @@ function Dashboard(props) {
       <h1>Dashboard</h1>
       <Link to="/characterSelection"> Create character</Link>
 
-      {props.characters.map((each, index) => (
-        <>
-          <Character key={index} character={each} />
-          <Link to={`/edit/${each.nickname}`}>
-            <button key={index + 100}>Edit</button>
-          </Link>
-        </>
-      ))}
+      {props.characters.map((each, index) => {
+        console.log(index, "index");
+        return (
+          <div key={index}>
+            <Character character={each} />
+            <Link to={`/edit/${each.nickname}`}>
+              <button>Edit</button>
+            </Link>
+          </div>
+        );
+      })}
 
       <Link to="/purchase">
         <h2>Books to buy</h2>

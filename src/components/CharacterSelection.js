@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import { connect } from "react-redux";
 import { setCharacter, editCharacter } from "../actions/character";
-import { Link } from "react-router-dom";
 
 const CharacterSelection = ({ match, setCharacter, editCharacter }) => {
   const history = useHistory();
