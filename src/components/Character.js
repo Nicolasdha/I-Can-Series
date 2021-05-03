@@ -2,18 +2,18 @@ import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { setActiveCharacter } from "../actions/character";
+import { startSetActiveCharacter } from "../actions/character";
 
-const Character = ({ character, setActiveCharacter }) => {
-  const setActiveCharacterClick = (e) => {
-    setActiveCharacter(character);
+const Character = ({ character, startSetActiveCharacter }) => {
+  const startSetActiveCharacterClick = (e) => {
+    startSetActiveCharacter(character);
     // history.push("/BookSelection");
   };
 
   return (
     <div>
       <Link to="/bookSelection">
-        <p onClick={setActiveCharacterClick}>{character.nickname}</p>
+        <p onClick={startSetActiveCharacterClick}>{character.nickname}</p>
       </Link>
     </div>
   );
@@ -25,7 +25,8 @@ const Character = ({ character, setActiveCharacter }) => {
 // });
 
 const mapDispatchToProps = (dispatch) => ({
-  setActiveCharacter: (character) => dispatch(setActiveCharacter(character)),
+  startSetActiveCharacter: (character) =>
+    dispatch(startSetActiveCharacter(character)),
 });
 
 export default connect(undefined, mapDispatchToProps)(Character);

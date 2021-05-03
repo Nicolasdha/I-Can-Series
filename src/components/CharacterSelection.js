@@ -1,18 +1,15 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { history } from "../routers/AppRouter";
 import { v4 as uuidv4 } from "uuid";
 
 import { connect } from "react-redux";
-import { setCharacter, editCharacter } from "../actions/character";
+import { startCreateCharacter, editCharacter } from "../actions/character";
 
-const CharacterSelection = ({ match, setCharacter, editCharacter }) => {
-  const history = useHistory();
-
-  const [gender, setGender] = useState(match.gender);
-  const [ethnicity, setEthnicity] = useState(match.ethnicity);
-  const [passion, setPassion] = useState(match.passion);
+const CharacterSelection = ({ match, startCreateCharacter, editCharacter }) => {
+  const [gender, setGender] = useState(match.gender || "");
+  const [ethnicity, setEthnicity] = useState(match.ethnicity || "");
+  const [passion, setPassion] = useState(match.passion || "");
   const [nickname, setNickname] = useState(match.nickname || "");
-
   const onSubmit = (e) => {
     e.preventDefault();
     if (gender && ethnicity && passion && nickname) {
@@ -27,7 +24,7 @@ const CharacterSelection = ({ match, setCharacter, editCharacter }) => {
         history.push("/dashboard");
         return;
       }
-      setCharacter({
+      startCreateCharacter({
         gender,
         ethnicity,
         passion,
@@ -108,7 +105,8 @@ const CharacterSelection = ({ match, setCharacter, editCharacter }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  setCharacter: (character) => dispatch(setCharacter(character)),
+  startCreateCharacter: (character) =>
+    dispatch(startCreateCharacter(character)),
   editCharacter: (updates) => dispatch(editCharacter(updates)),
 });
 

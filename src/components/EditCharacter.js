@@ -5,7 +5,7 @@ import CharacterSelection from "./CharacterSelection";
 
 const EditCharacter = ({ characters }) => {
   let nickname = window.location.pathname.toString();
-  const match = characters.find(
+  const match = characters.characters?.find(
     (each) => each.nickname === nickname.replace(/\/(edit)\//, "")
   );
 

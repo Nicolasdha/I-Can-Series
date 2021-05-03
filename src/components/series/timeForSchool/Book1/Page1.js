@@ -6,6 +6,7 @@ const Page1 = (props) => {
   return (
     <div>
       <h1> I can get ready for bed and go to SCHOOL. </h1>
+      <h2>Name {props.characters.activeCharacter?.nickname}</h2>
       <p>
         I can stop playing. I can brush my teeth. I can get washed up. I can get
         my hair brushed. I can get my pajamas on.

@@ -12,6 +12,19 @@ export const LoginPage = ({ login }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // if (user) {
+  //   database
+  //     .collection("users")
+  //     .doc(user.uid)
+  //     .collection("orders")
+  //     .orderBy("created", "desc")
+  //     .onSnapshot((snapshot) => {
+  //       setOrders(
+  //         snapshot.docs.map((doc) => ({
+  //           id: doc.id,
+  //           data: doc.data(),
+  //         }))
+
   const signIn = (e) => {
     e.preventDefault();
     console.log(email);
@@ -69,7 +82,7 @@ export const LoginPage = ({ login }) => {
             type="submit"
             onClick={signIn}
           >
-            Sign in{" "}
+            Sign in
           </button>
         </form>
         <button onClick={register} className="login__registerButton">

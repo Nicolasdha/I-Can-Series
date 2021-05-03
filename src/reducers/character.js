@@ -1,24 +1,54 @@
-export default (state = [], action) => {
+const defaultState = {
+  activeCharacter: {
+    gender: "male",
+    ethnicity: "cauc",
+    passion: "dino",
+    nickname: "Jimmy",
+    id: "035a930b-fedf-4648-a991-90eb6de888c9",
+  },
+  characters: [],
+};
+
+export default (state = defaultState, action) => {
   console.log("Character action", action);
   console.log("Character state", state);
   switch (action.type) {
-    case "SET_CHARACTER":
-      return [...state, action.character];
+    case "CREATE_CHARACTER":
+      state.characters.push(action.character);
+      return { ...state };
     case "EDIT_CHARACTER":
-      return state.map((each) => {
+      state.characters = state.characters.map((each) => {
         if (each.id === action.updates.id) {
-          return {
-            ...each,
-            ...action.updates,
-          };
+          return { ...action.updates };
         } else {
           return each;
         }
       });
+      return { ...state };
+    case "READ_CHARACTERS":
+      state.characters = action.characters;
+      return { ...state };
+    case "REMOVE_CHARACTER":
+      state.characters = state.characters.filter(({ id }) => id !== action.id);
+      return { ...state };
     case "SET_ACTIVE_CHARACTER":
       state.activeCharacter = action.activeCharacter;
-      return [...state];
+      return { ...state };
     default:
       return state;
   }
 };
+
+// let keys = state.flatMap((each) => {
+//   return Object.keys(each);
+// });
+// console.log(keys);
+// if (
+//   keys.find((each) => {
+//     return each === "activeCharacter";
+//   })
+// ) {
+//   console.log("GOT ITTTTT");
+// } else {
+//[...state, { activeCharacter: action.activeCharacter }]
+// state.activeCharacter = action.activeCharacter;
