@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { admin } from "firebase";
+import * as admin from "firebase-admin";
 
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
