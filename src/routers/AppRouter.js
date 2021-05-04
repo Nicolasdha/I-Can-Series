@@ -14,6 +14,8 @@ import Header from "../components/Header";
 import NotFoundPage from "../components/404";
 import Dashboard from "../components/Dashboard";
 import Login from "../components/Login";
+import VerifyLogin from "../components/VerifyLogin";
+import ResetPassword from "../components/ResetPassword";
 import CharacterSelection from "../components/CharacterSelection";
 import BookSelection from "../components/BookSelection";
 import Purchase from "../components/Purchase";
@@ -21,6 +23,7 @@ import Payment from "../components/Payment";
 import EditCharacter from "../components/EditCharacter";
 import Basket from "../components/Basket";
 import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PrivateRoute";
 
 //Routes
 import timeForSleepRoutes from "./timeForSleepRoutes";
@@ -32,8 +35,11 @@ const AppRouter = (
     <Header />
     <Switch>
       <Route exact={true} path="/" component={Login} />
-      <PrivateRoute path="/dashboard" component={Dashboard} />
+      <Route path="/verify" component={VerifyLogin} />
+      <Route path="/reset" component={ResetPassword} />
       <Route path="/login" component={App} />
+      <PrivateRoute path="/dashboard" component={Dashboard} />
+
       <PrivateRoute path="/edit/:nickname" component={EditCharacter} />
       <PrivateRoute path="/characterSelection" component={CharacterSelection} />
       <PrivateRoute path="/bookSelection" component={BookSelection} />

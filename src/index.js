@@ -31,6 +31,7 @@ const renderApp = () => {
     hasRendered = true;
   }
 };
+renderApp();
 
 firebase.auth().onAuthStateChanged((user) => {
   console.log("THIS IS THE USER >>>>", user);

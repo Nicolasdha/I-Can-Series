@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { admin } from "firebase";
 
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -15,6 +16,24 @@ import {
 
 const googleLogo = "../images/googleLogo.png";
 
+const actionCodeSettings = {
+  // URL you want to redirect back to. The domain (www.example.com) for
+  // this URL must be whitelisted in the Firebase Console.
+  url: "http://localhost:3000/dashboard",
+  // This must be true for email link sign-in.
+  handleCodeInApp: true,
+  iOS: {
+    bundleId: "com.example.ios",
+  },
+  android: {
+    packageName: "com.example.android",
+    installApp: true,
+    minimumVersion: "12",
+  },
+  // FDL custom domain.
+  dynamicLinkDomain: "http://localhost:3000/dashboard",
+};
+
 export const LoginPage = ({
   login,
   startLoginGoogle,
@@ -24,19 +43,6 @@ export const LoginPage = ({
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  // if (user) {
-  //   database
-  //     .collection("users")
-  //     .doc(user.uid)
-  //     .collection("orders")
-  //     .orderBy("created", "desc")
-  //     .onSnapshot((snapshot) => {
-  //       setOrders(
-  //         snapshot.docs.map((doc) => ({
-  //           id: doc.id,
-  //           data: doc.data(),
-  //         }))
 
   const signIn = (e) => {
     e.preventDefault();
@@ -73,6 +79,21 @@ export const LoginPage = ({
       .catch((error) => alert(error.message));
   };
 
+  const resetPassword = (e) => {
+    admin
+      .auth()
+      .generatePasswordResetLink(email, actionCodeSettings)
+      .then((link) => {
+        // Construct password reset email template, embed the link and send
+        // using custom SMTP server.
+        console.log(link);
+        // return sendCustomPasswordResetEmail(email, displayName, link);
+      })
+      .catch((error) => {
+        // Some error occurred.
+      });
+  };
+
   return (
     <div className="login">
       <div className="login__container">
@@ -101,21 +122,26 @@ export const LoginPage = ({
         <button onClick={register} className="login__registerButton">
           Create your I Can Series Account
         </button>
+        <br></br>
 
         <button className="button button--login" onClick={startLoginGoogle}>
           <img className="button__image" src="{googleLogo}" />
           Login with Google
         </button>
+        <br></br>
 
         <button className="button button--login" onClick={startLoginFacebook}>
           <img className="button__image" src="/images/facebookLogo.png" />
           Login with Facebook
         </button>
+        <br></br>
 
         <button className="button button--login" onClick={startLoginTwitter}>
           <img className="button__image" src="/images/twitterLogo.png" />
           Login with Twitter
         </button>
+
+        <button onClick={resetPassword}>Reset Password</button>
       </div>
     </div>
   );
@@ -130,41 +156,41 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(undefined, mapDispatchToProps)(LoginPage);
 
-{
-  /* onClick={startLoginGoogle}*/
-}
-// onClick={startLoginFacebook}
-//onClick={startLoginTwitter}
+//Updating passowrd
+// firebase.auth()
+//         .signInWithEmailAndPassword('email', 'oldPassword')
+//         .then(function(user) {
 
-{
-  /* <div className="box-layout">
-    <h1 className="title">
-      O<span>verhea</span>d
-    </h1>
+//             firebase.auth().currentUser.updatePassword('newPassword').then(function(){
 
-    <div className="box-layout__background">
-      <div className="box-layout__box">
-        {/* <h1 className="box-layout__title">Overhead</h1>
-        <p className="box-layout__subtitle">Track your expenses</p>
-        <hr className="box-layout--hr"></hr>
-    
-        <button className="button button--login">
-          <img className="button__image" src="/images/googleLogo.png" />
-          Login with Google
-        </button>
-        <hr className="button--hr"></hr>
+//                 //Do something
 
-        <button className="button button--login">
-          <img className="button__image" src="/images/facebookLogo.png" />
-          Login with Facebook
-        </button>
-        <hr className="button--hr"></hr>
+//             }).catch(function(err){
+//                 //Do something
+//             });
 
-        <button className="button button--login">
-          <img className="button__image" src="/images/twitterLogo.png" />
-          Login with Twitter
-        </button>
-      </div>
-    </div>
-  </div> */
-}
+//         }).catch(function(err){
+//             //Do something
+//         });
+
+// Verify email?????
+// firebase.auth().currentUser.sendEmailVerification(actionCodeSettings)
+//   .then(function() {
+//     // Verification email sent.
+//   })
+//   .catch(function(error) {
+//     // Error occurred. Inspect error.code.
+//   });
+
+// if (user) {
+//   database
+//     .collection("users")
+//     .doc(user.uid)
+//     .collection("orders")
+//     .orderBy("created", "desc")
+//     .onSnapshot((snapshot) => {
+//       setOrders(
+//         snapshot.docs.map((doc) => ({
+//           id: doc.id,
+//           data: doc.data(),
+//         }))
