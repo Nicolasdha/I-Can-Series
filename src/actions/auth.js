@@ -1,4 +1,10 @@
-import { auth } from "../firebase/firebase";
+import {
+  auth,
+  firebase,
+  googleAuthProvider,
+  facebookAuthProvider,
+  twitterAuthProvider,
+} from "../firebase/firebase";
 
 export const login = (uid) => {
   return {
@@ -16,5 +22,23 @@ export const logout = () => {
 export const startLogout = () => {
   return () => {
     return auth.signOut();
+  };
+};
+
+export const startLoginGoogle = () => {
+  return (dispatch) => {
+    return firebase.auth().signInWithPopup(googleAuthProvider);
+  };
+};
+
+export const startLoginFacebook = () => {
+  return (dispatch) => {
+    return firebase.auth().signInWithPopup(facebookAuthProvider);
+  };
+};
+
+export const startLoginTwitter = () => {
+  return (dispatch) => {
+    return firebase.auth().signInWithPopup(twitterAuthProvider);
   };
 };

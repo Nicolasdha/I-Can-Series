@@ -34,6 +34,8 @@ export default (state = defaultState, action) => {
     case "SET_ACTIVE_CHARACTER":
       state.activeCharacter = action.activeCharacter;
       return { ...state };
+    case "WIPE_CHARACTERS":
+      return {};
     default:
       return state;
   }

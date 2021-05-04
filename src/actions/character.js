@@ -138,3 +138,9 @@ export const startRemoveCharacter = (id) => {
     }
   };
 };
+
+export const wipeCharacters = () => {
+  return {
+    type: "WIPE_CHARACTERS",
+  };
+};

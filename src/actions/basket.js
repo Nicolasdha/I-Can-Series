@@ -11,3 +11,9 @@ export const removeFromBasket = (id) => {
     id,
   };
 };
+
+export const emptyBasket = () => {
+  return {
+    type: "EMPTY_BASKET",
+  };
+};

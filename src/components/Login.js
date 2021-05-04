@@ -3,11 +3,24 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { auth } from "../firebase/firebase";
-import { login } from "../actions/auth";
+import {
+  login,
+  startLoginGoogle,
+  startLoginFacebook,
+  startLoginTwitter,
+} from "../actions/auth";
 // import {startLoginGoogle, startLoginFacebook, startLoginTwitter} from '../actions/auth'
 
 // export const LoginPage = ({ startLoginGoogle, startLoginFacebook, startLoginTwitter }) => (
-export const LoginPage = ({ login }) => {
+
+const googleLogo = "../images/googleLogo.png";
+
+export const LoginPage = ({
+  login,
+  startLoginGoogle,
+  startLoginFacebook,
+  startLoginTwitter,
+}) => {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -88,16 +101,31 @@ export const LoginPage = ({ login }) => {
         <button onClick={register} className="login__registerButton">
           Create your I Can Series Account
         </button>
+
+        <button className="button button--login" onClick={startLoginGoogle}>
+          <img className="button__image" src="{googleLogo}" />
+          Login with Google
+        </button>
+
+        <button className="button button--login" onClick={startLoginFacebook}>
+          <img className="button__image" src="/images/facebookLogo.png" />
+          Login with Facebook
+        </button>
+
+        <button className="button button--login" onClick={startLoginTwitter}>
+          <img className="button__image" src="/images/twitterLogo.png" />
+          Login with Twitter
+        </button>
       </div>
     </div>
   );
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  // startLoginGoogle: () => dispatch(startLoginGoogle()),
-  // startLoginFacebook: () => dispatch(startLoginFacebook()),
-  // startLoginTwitter: () => dispatch(startLoginTwitter()),
   login: (uid) => dispatch(login(uid)),
+  startLoginGoogle: () => dispatch(startLoginGoogle()),
+  startLoginFacebook: () => dispatch(startLoginFacebook()),
+  startLoginTwitter: () => dispatch(startLoginTwitter()),
 });
 
 export default connect(undefined, mapDispatchToProps)(LoginPage);

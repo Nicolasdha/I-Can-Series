@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Router, Switch } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 
 // -------------------- TIME FOR SCHOOL ----------
 //Book 1
@@ -24,72 +24,72 @@ import timeForSchoolB7p1 from "../components/series/timeForSchool/Book7/Page1";
 import timeForSchoolB7p2 from "../components/series/timeForSchool/Book7/Page2";
 
 const timeForSleepRoutes = [
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book1/page1"
     component={timeForSchoolB1p1}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book1/page2"
     component={timeForSchoolB1p2}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book2/page1"
     component={timeForSchoolB2p1}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book2/page2"
     component={timeForSchoolB2p2}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book3/page1"
     component={timeForSchoolB3p1}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book3/page2"
     component={timeForSchoolB3p2}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book4/page1"
     component={timeForSchoolB4p1}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book4/page2"
     component={timeForSchoolB4p2}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book5/page1"
     component={timeForSchoolB5p1}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book5/page2"
     component={timeForSchoolB5p2}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book6/page1"
     component={timeForSchoolB6p1}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book6/page2"
     component={timeForSchoolB6p2}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book7/page1"
     component={timeForSchoolB7p1}
   />,
-  <Route
+  <PrivateRoute
     key={1000}
     path="/TimeForSchool/book7/page2"
     component={timeForSchoolB7p2}

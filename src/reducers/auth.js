@@ -10,6 +10,7 @@ const auth = (state = {}, action) => {
     case "LOGOUT":
       return {};
     default:
+      console.log("DEFAULT HIT");
       return state;
   }
 };

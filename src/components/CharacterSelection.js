@@ -5,6 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 import { connect } from "react-redux";
 import { startCreateCharacter, editCharacter } from "../actions/character";
 
+// const v4options = {
+//   random: [0x91],
+// };
 const CharacterSelection = ({ match, startCreateCharacter, editCharacter }) => {
   const [gender, setGender] = useState(match.gender || "");
   const [ethnicity, setEthnicity] = useState(match.ethnicity || "");

@@ -5,10 +5,7 @@ const reducer = (state = [], action) => {
     case "ADD_TO_BASKET":
       return [...state, action.item];
     case "EMPTY_BASKET":
-      return {
-        ...state,
-        basket: [],
-      };
+      return [];
     case "REMOVE_FROM_BASKET":
       const index = state.findIndex((each) => each.item.id === action.id);
 

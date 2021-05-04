@@ -20,6 +20,7 @@ import Purchase from "../components/Purchase";
 import Payment from "../components/Payment";
 import EditCharacter from "../components/EditCharacter";
 import Basket from "../components/Basket";
+import PrivateRoute from "./PrivateRoute";
 
 //Routes
 import timeForSleepRoutes from "./timeForSleepRoutes";
@@ -31,14 +32,14 @@ const AppRouter = (
     <Header />
     <Switch>
       <Route exact={true} path="/" component={Login} />
-      <Route path="/dashboard" component={Dashboard} />
+      <PrivateRoute path="/dashboard" component={Dashboard} />
       <Route path="/login" component={App} />
-      <Route path="/edit/:nickname" component={EditCharacter} />
-      <Route path="/characterSelection" component={CharacterSelection} />
-      <Route path="/bookSelection" component={BookSelection} />
-      <Route path="/purchase" component={Purchase} />
-      <Route path="/basket" component={Basket} />
-      <Route path="/payment" component={Payment} />
+      <PrivateRoute path="/edit/:nickname" component={EditCharacter} />
+      <PrivateRoute path="/characterSelection" component={CharacterSelection} />
+      <PrivateRoute path="/bookSelection" component={BookSelection} />
+      <PrivateRoute path="/purchase" component={Purchase} />
+      <PrivateRoute path="/basket" component={Basket} />
+      <PrivateRoute path="/payment" component={Payment} />
       {timeForSchoolRoutes}
       {timeForSleepRoutes}
       <Route component={NotFoundPage} />
