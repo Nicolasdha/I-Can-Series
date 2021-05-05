@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 import { Provider } from "react-redux";
 import * as serviceWorkerRegistration from "./serviceWorker/serviceWorkerRegistration";
 import reportWebVitals from "./analytics/reportWebVitals";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 import "./styles/styles.scss";
 import AppRouter, { history } from "./routers/AppRouter";
@@ -15,9 +17,15 @@ import LoadingPage from "./components/LoadingPage";
 
 const store = configureStore();
 
+const promise = loadStripe(
+  "pk_test_51InSTbLFkWX2uXtIaZFhkPe2jaq1jR4ZZMGDHyeCBuoiqOvHTc7wIgDByYId3XZZgaMc54pjW26yNF4tt02ZfXiO002BJqMF0t"
+);
+
 const jsx = (
   <React.StrictMode>
-    <Provider store={store}>{AppRouter}</Provider>
+    <Provider store={store}>
+      <Elements stripe={promise}>{AppRouter}</Elements>
+    </Provider>
   </React.StrictMode>
 );
 
@@ -31,22 +39,36 @@ const renderApp = () => {
     hasRendered = true;
   }
 };
-renderApp();
 
 firebase.auth().onAuthStateChanged((user) => {
   console.log("THIS IS THE USER >>>>", user);
-  if (user) {
-    store.dispatch(login(user.uid));
-    // store.dispatch(startSetExpenses()).then(()=>{
-    renderApp();
-    if (history.location.pathname === "/") {
-      history.push("/dashboard");
+
+  if (user?.providerData[0].providerId === "password") {
+    if (user.emailVerified) {
+      // store.dispatch(login(user.uid, user));
+      renderApp();
+      if (history.location.pathname === "/") {
+        history.push("/dashboard");
+      } else {
+        // renderApp();
+        // store.dispatch(logout());
+        // history.push("/");
+      }
     }
-    //});
   } else {
-    renderApp();
-    store.dispatch(logout());
-    history.push("/");
+    if (user) {
+      store.dispatch(login(user.uid, user));
+      renderApp();
+      if (history.location.pathname === "/") {
+        history.push("/dashboard");
+      }
+      // store.dispatch(startSetExpenses()).then(()=>{
+      //});
+    } else {
+      renderApp();
+      // store.dispatch(logout());
+      // history.push("/");
+    }
   }
 });
 

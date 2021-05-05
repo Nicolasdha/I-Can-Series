@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as admin from "firebase-admin";
 
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -10,29 +9,8 @@ import {
   startLoginFacebook,
   startLoginTwitter,
 } from "../actions/auth";
-// import {startLoginGoogle, startLoginFacebook, startLoginTwitter} from '../actions/auth'
-
-// export const LoginPage = ({ startLoginGoogle, startLoginFacebook, startLoginTwitter }) => (
 
 const googleLogo = "../images/googleLogo.png";
-
-const actionCodeSettings = {
-  // URL you want to redirect back to. The domain (www.example.com) for
-  // this URL must be whitelisted in the Firebase Console.
-  url: "http://localhost:3000/dashboard",
-  // This must be true for email link sign-in.
-  handleCodeInApp: true,
-  iOS: {
-    bundleId: "com.example.ios",
-  },
-  android: {
-    packageName: "com.example.android",
-    installApp: true,
-    minimumVersion: "12",
-  },
-  // FDL custom domain.
-  dynamicLinkDomain: "http://localhost:3000/dashboard",
-};
 
 export const LoginPage = ({
   login,
@@ -43,6 +21,7 @@ export const LoginPage = ({
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [signInError, setSignInError] = useState(false);
 
   const signIn = (e) => {
     e.preventDefault();
@@ -51,47 +30,27 @@ export const LoginPage = ({
 
     auth
       .signInWithEmailAndPassword(email, password)
-      .then((auth) => {
-        console.log(auth);
-        console.log(auth.user.uid);
-
-        if (auth) {
-          history.push("/");
-          login(auth.user.uid);
+      .then((authUser) => {
+        console.log("🐱", authUser.user);
+        if (authUser.user.emailVerified) {
+          login(authUser.user.uid, authUser.user);
+          console.log("HERE");
+          history.push("/dashboard");
+          return;
+        } else {
+          setSignInError("Please verify email");
+          return;
         }
-      })
-      .catch((error) => alert(error.message));
-  };
-
-  const register = (e) => {
-    e.preventDefault();
-    console.log(password);
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((auth) => {
-        // Success
-        console.log(auth);
-        login(auth.user.uid);
-        if (auth) {
-          history.push("/");
-        }
-      })
-      .catch((error) => alert(error.message));
-  };
-
-  const resetPassword = (e) => {
-    admin
-      .auth()
-      .generatePasswordResetLink(email, actionCodeSettings)
-      .then((link) => {
-        // Construct password reset email template, embed the link and send
-        // using custom SMTP server.
-        console.log(link);
-        // return sendCustomPasswordResetEmail(email, displayName, link);
       })
       .catch((error) => {
-        // Some error occurred.
+        setSignInError("Password incorrect, or user exists with that email");
+        console.log(error);
+        // alert(error.message);
       });
+  };
+
+  const resetPassword = () => {
+    history.push("/reset");
   };
 
   return (
@@ -118,29 +77,35 @@ export const LoginPage = ({
           >
             Sign in
           </button>
+          {signInError && <h2>{signInError}</h2>}
         </form>
-        <button onClick={register} className="login__registerButton">
-          Create your I Can Series Account
+        <br></br>
+        <button
+          onClick={() => {
+            history.push("/createNewUser");
+          }}
+        >
+          New User Creation?
         </button>
         <br></br>
-
+        <br></br>
         <button className="button button--login" onClick={startLoginGoogle}>
           <img className="button__image" src="{googleLogo}" />
           Login with Google
         </button>
         <br></br>
-
+        <br></br>
         <button className="button button--login" onClick={startLoginFacebook}>
           <img className="button__image" src="/images/facebookLogo.png" />
           Login with Facebook
         </button>
         <br></br>
-
+        <br></br>
         <button className="button button--login" onClick={startLoginTwitter}>
           <img className="button__image" src="/images/twitterLogo.png" />
           Login with Twitter
         </button>
-
+        <br></br> <br></br>
         <button onClick={resetPassword}>Reset Password</button>
       </div>
     </div>
@@ -148,7 +113,7 @@ export const LoginPage = ({
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  login: (uid) => dispatch(login(uid)),
+  login: (uid, user) => dispatch(login(uid, user)),
   startLoginGoogle: () => dispatch(startLoginGoogle()),
   startLoginFacebook: () => dispatch(startLoginFacebook()),
   startLoginTwitter: () => dispatch(startLoginTwitter()),
@@ -172,15 +137,6 @@ export default connect(undefined, mapDispatchToProps)(LoginPage);
 //         }).catch(function(err){
 //             //Do something
 //         });
-
-// Verify email?????
-// firebase.auth().currentUser.sendEmailVerification(actionCodeSettings)
-//   .then(function() {
-//     // Verification email sent.
-//   })
-//   .catch(function(error) {
-//     // Error occurred. Inspect error.code.
-//   });
 
 // if (user) {
 //   database

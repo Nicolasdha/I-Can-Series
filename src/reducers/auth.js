@@ -6,11 +6,11 @@ const auth = (state = {}, action) => {
       return {
         ...state,
         uid: action.uid,
+        user: action.user,
       };
     case "LOGOUT":
       return {};
     default:
-      console.log("DEFAULT HIT");
       return state;
   }
 };

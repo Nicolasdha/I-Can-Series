@@ -6,10 +6,11 @@ import {
   twitterAuthProvider,
 } from "../firebase/firebase";
 
-export const login = (uid) => {
+export const login = (uid, user) => {
   return {
     type: "LOGIN",
     uid,
+    user,
   };
 };
 

@@ -14,7 +14,8 @@ import Header from "../components/Header";
 import NotFoundPage from "../components/404";
 import Dashboard from "../components/Dashboard";
 import Login from "../components/Login";
-import VerifyLogin from "../components/VerifyLogin";
+import UserProfile from "../components/UserProfile";
+import NewUserCreation from "../components/NewUserCreation";
 import ResetPassword from "../components/ResetPassword";
 import CharacterSelection from "../components/CharacterSelection";
 import BookSelection from "../components/BookSelection";
@@ -35,12 +36,13 @@ const AppRouter = (
     <Header />
     <Switch>
       <Route exact={true} path="/" component={Login} />
-      <Route path="/verify" component={VerifyLogin} />
+      <Route path="/createNewUser" component={NewUserCreation} />
       <Route path="/reset" component={ResetPassword} />
       <Route path="/login" component={App} />
       <PrivateRoute path="/dashboard" component={Dashboard} />
 
       <PrivateRoute path="/edit/:nickname" component={EditCharacter} />
+      <PrivateRoute path="/UserProfile" component={UserProfile} />
       <PrivateRoute path="/characterSelection" component={CharacterSelection} />
       <PrivateRoute path="/bookSelection" component={BookSelection} />
       <PrivateRoute path="/purchase" component={Purchase} />
