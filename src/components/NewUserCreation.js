@@ -13,18 +13,19 @@ export const NewUserCreation = ({ login }) => {
   const [pageMessage, setPageMessage] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const register = (e) => {
+  const register = async (e) => {
     e.preventDefault();
     if (password1 !== password2) {
       setPageMessage("Passwords do not match");
       return;
     }
-    setSubmitted(true);
-    auth
-      .createUserWithEmailAndPassword(email, password1)
+    await auth
+      .createUserWithEmailAndPassword(email.toLowerCase().trim(), password1)
       .then((auth1) => {
         // Success
         console.log(auth);
+        setSubmitted(true);
+
         auth.currentUser
           .sendEmailVerification()
           .then(function () {
@@ -35,13 +36,13 @@ export const NewUserCreation = ({ login }) => {
           })
           .catch(function (error) {
             // Error occurred. Inspect error.code.
-            alert(error);
+            setPageMessage(error);
           });
         // login(auth.user.uid);
         if (auth) {
         }
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => setPageMessage(error.message));
   };
 
   return !submitted ? (

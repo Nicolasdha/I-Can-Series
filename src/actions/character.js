@@ -39,7 +39,6 @@ export const startCreateCharacter = ({
 };
 
 const setActiveCharacter = (activeCharacter) => {
-  console.log("setActiveCharacter action fire");
   return {
     type: "SET_ACTIVE_CHARACTER",
     activeCharacter,
@@ -65,10 +64,33 @@ export const startSetActiveCharacter = (activeCharacter) => {
 };
 
 export const editCharacter = (updates) => {
-  console.log("EDIT CHAR fire ");
   return {
     type: "EDIT_CHARACTER",
     updates,
+  };
+};
+
+export const startEditCharacter = ({
+  gender,
+  ethnicity,
+  passion,
+  nickname,
+  id,
+}) => {
+  return async (dispatch, getState) => {
+    const uid = getState().authentication.uid;
+    try {
+      const ref = await database
+        .collection("users")
+        .doc(uid)
+        .collection("characters")
+        .doc(id)
+        .set({ gender, ethnicity, passion, nickname, id });
+      //dispatch(editCharacter({ gender, ethnicity, passion, nickname, id }));
+    } catch (error) {
+      console.log(error);
+      window.alert("Unable to perform action please try again");
+    }
   };
 };
 
@@ -101,16 +123,6 @@ export const startReadCharacters = () => {
     }
   };
 };
-// database
-// .collection("users")
-// .doc(uid)
-// .collection("characters")
-// .onSnapshot((snapshot) => {
-//   console.log(
-//     snapshot.docs.map((each) => ({
-//       data: each.data(),
-//     }))
-//   );
 
 const removeCharacter = (id) => {
   return {

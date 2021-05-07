@@ -8,10 +8,16 @@ import Product from "./Product";
 import getBasketTotal from "../selectors/basketTotal";
 import axios from "../axios/axios";
 import { emptyBasket } from "../actions/basket";
-import { addOrder } from "../actions/orders";
+import { addOrder, startSetOrders } from "../actions/orders";
 import { database } from "../firebase/firebase";
 
-const Payment = ({ basket, emptyBasket, userUID, addOrder }) => {
+const Payment = ({
+  basket,
+  emptyBasket,
+  userUID,
+  addOrder,
+  startSetOrders,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const history = useHistory();
@@ -69,13 +75,14 @@ const Payment = ({ basket, emptyBasket, userUID, addOrder }) => {
             amount: paymentIntent.amount,
             created: paymentIntent.created,
           });
-        addOrder({
-          basket: basket,
-          amount: paymentIntent.amount,
-          created: paymentIntent.created,
-        });
+      })
+      .then(() => {
+        startSetOrders();
         emptyBasket();
         history.replace("/orders");
+      })
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -137,11 +144,11 @@ const mapStoreToProps = (state, props) => ({
   userUID: state.authentication.uid,
   basket: state.basket,
 });
+
 const mapDispatchToProps = (dispatch) => ({
   emptyBasket: () => dispatch(emptyBasket()),
   addOrder: (order) => dispatch(addOrder(order)),
+  startSetOrders: () => dispatch(startSetOrders()),
 });
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Payment);
-
-// What is the button distabled thing that I did with amazon

@@ -29,12 +29,11 @@ export const LoginPage = ({
     console.log(password);
 
     auth
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email.toLowerCase().trim(), password)
       .then((authUser) => {
         console.log("🐱", authUser.user);
         if (authUser.user.emailVerified) {
           login(authUser.user.uid, authUser.user);
-          console.log("HERE");
           history.push("/dashboard");
           return;
         } else {

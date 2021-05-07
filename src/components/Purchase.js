@@ -8,21 +8,21 @@ const Purchase = (props) => {
   return (
     <div>
       <Product
-        id="1"
+        id="sleep"
         title="Time for Sleep Series - 7 Books on how to initiate bedtime"
         price={49.99}
         image="https://images-na.ssl-images-amazon.com/images/I/61TiYyagO9L._AC_SX355_.jpg"
         key={1}
       />
       <Product
-        id="2"
+        id="school"
         title="Time for School Series - 7 Books on how to initiate school time"
         price={49.99}
         image="https://images-na.ssl-images-amazon.com/images/I/61TiYyagO9L._AC_SX355_.jpg"
         key={2}
       />
       <Product
-        id="3"
+        id="subscription"
         title="Monthly subscription - Get access to exclusive content and all books"
         price={99.99}
         image="https://images-na.ssl-images-amazon.com/images/I/61TiYyagO9L._AC_SX355_.jpg"

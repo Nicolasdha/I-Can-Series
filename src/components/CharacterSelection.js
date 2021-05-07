@@ -3,12 +3,16 @@ import { history } from "../routers/AppRouter";
 import { v4 as uuidv4 } from "uuid";
 
 import { connect } from "react-redux";
-import { startCreateCharacter, editCharacter } from "../actions/character";
+import { startCreateCharacter, startEditCharacter } from "../actions/character";
 
 // const v4options = {
 //   random: [0x91],
 // };
-const CharacterSelection = ({ match, startCreateCharacter, editCharacter }) => {
+const CharacterSelection = ({
+  match,
+  startCreateCharacter,
+  startEditCharacter,
+}) => {
   const [gender, setGender] = useState(match.gender || "");
   const [ethnicity, setEthnicity] = useState(match.ethnicity || "");
   const [passion, setPassion] = useState(match.passion || "");
@@ -17,7 +21,7 @@ const CharacterSelection = ({ match, startCreateCharacter, editCharacter }) => {
     e.preventDefault();
     if (gender && ethnicity && passion && nickname) {
       if (match.gender) {
-        editCharacter({
+        startEditCharacter({
           gender,
           ethnicity,
           passion,
@@ -110,7 +114,7 @@ const CharacterSelection = ({ match, startCreateCharacter, editCharacter }) => {
 const mapDispatchToProps = (dispatch) => ({
   startCreateCharacter: (character) =>
     dispatch(startCreateCharacter(character)),
-  editCharacter: (updates) => dispatch(editCharacter(updates)),
+  startEditCharacter: (updates) => dispatch(startEditCharacter(updates)),
 });
 
 export default connect(undefined, mapDispatchToProps)(CharacterSelection);
