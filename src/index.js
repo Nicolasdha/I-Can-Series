@@ -14,7 +14,9 @@ import configureStore from "./store/configureStore";
 import { auth, firebase } from "./firebase/firebase";
 import { login, logout } from "./actions/auth";
 import LoadingPage from "./components/LoadingPage";
+import { startReadCharacters } from "./actions/character";
 
+import { startSetOrders } from "./actions/orders";
 const store = configureStore();
 
 const promise = loadStripe(
@@ -33,8 +35,14 @@ ReactDOM.render(<LoadingPage />, document.getElementById("root"));
 
 let hasRendered = false;
 
-const renderApp = () => {
+const setProfile = async () => {
+  await store.dispatch(startReadCharacters());
+  await store.dispatch(startSetOrders());
+};
+
+const renderApp = async () => {
   if (!hasRendered) {
+    await setProfile();
     ReactDOM.render(jsx, document.getElementById("root"));
     hasRendered = true;
   }

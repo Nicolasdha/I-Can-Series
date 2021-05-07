@@ -94,19 +94,21 @@ export const startEditCharacter = ({
   };
 };
 
-const readCharacters = (characters) => {
+const readCharacters = (characters, currentActive) => {
   return {
     type: "READ_CHARACTERS",
     characters,
+    currentActive,
   };
 };
 
 export const startReadCharacters = () => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const uid = getState().authentication.uid;
     const chars = [];
+    let currentActive = null;
     try {
-      database
+      await database
         .collection("users")
         .doc(uid)
         .collection("characters")
@@ -115,8 +117,18 @@ export const startReadCharacters = () => {
           querySnapshot.forEach((doc) => {
             chars.push(doc.data());
           });
-          dispatch(readCharacters(chars));
         });
+      await database
+        .collection("users")
+        .doc(uid)
+        .collection("activeCharacter")
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            currentActive = doc.data();
+          });
+        });
+      dispatch(readCharacters(chars, currentActive));
     } catch (error) {
       console.log(error);
       window.alert("Unable to perform action please try again");

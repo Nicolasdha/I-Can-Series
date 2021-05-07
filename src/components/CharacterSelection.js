@@ -20,23 +20,23 @@ const CharacterSelection = ({
   const onSubmit = (e) => {
     e.preventDefault();
     if (gender && ethnicity && passion && nickname) {
-      if (match.gender) {
-        startEditCharacter({
-          gender,
-          ethnicity,
-          passion,
-          nickname,
-          id: match.id,
-        });
-        history.push("/dashboard");
-        return;
-      }
+      // if (match.gender) {
+      //   startEditCharacter({
+      //     gender,
+      //     ethnicity,
+      //     passion,
+      //     nickname,
+      //     id: match.id,
+      //   });
+      //   history.push("/dashboard");
+      //   return;
+      // }
       startCreateCharacter({
         gender,
         ethnicity,
         passion,
         nickname,
-        id: uuidv4(),
+        id: match.gender ? match.id : uuidv4(),
       });
       history.push("/dashboard");
     }

@@ -1,11 +1,5 @@
 const defaultState = {
-  activeCharacter: {
-    gender: "male",
-    ethnicity: "cauc",
-    passion: "dino",
-    nickname: "Jimmy",
-    id: "035a930b-fedf-4648-a991-90eb6de888c9",
-  },
+  activeCharacter: null,
   characters: [],
 };
 
@@ -27,6 +21,7 @@ export default (state = defaultState, action) => {
       return { ...state };
     case "READ_CHARACTERS":
       state.characters = action.characters;
+      state.activeCharacter = action.currentActive;
       return { ...state };
     case "REMOVE_CHARACTER":
       state.characters = state.characters.filter(({ id }) => id !== action.id);

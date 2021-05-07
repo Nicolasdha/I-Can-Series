@@ -12,19 +12,17 @@ import LoadingPage from "./LoadingPage";
 
 function Dashboard(props) {
   const [render, setRender] = useState(false);
-  const [ordersIdState, setordersIdState] = useState([]);
-  const orders = [];
 
   useEffect(() => {
-    props.startReadCharacters();
-    props.startSetOrders();
-  }, []);
+    const setProfile = async () => {
+      // //Database limit on three rewrites ASAP I think every thrid one is not happening
 
-  //
-  //Database limit on three rewrites ASAP I think
-  setTimeout(() => {
-    setRender(true);
-  }, 0);
+      await props.startReadCharacters();
+      setRender(true);
+    };
+    setProfile();
+    // props.startSetOrders();
+  }, []);
 
   const removeCharacter = (e) => {
     props.startRemoveCharacter(e.target.value);
@@ -56,10 +54,6 @@ function Dashboard(props) {
           </Link>
 
           <Link to="/login"> Go lgin</Link>
-          <br></br>
-          {props.orders[1]?.orderIds.map((each, index) => (
-            <p key={index}>{each}</p>
-          ))}
         </div>
       ) : (
         <LoadingPage />
@@ -70,7 +64,6 @@ function Dashboard(props) {
 
 const mapStoreToProps = (state, props) => ({
   stateCharacters: state.character,
-  orders: state.orders,
 });
 
 const mapDispatchToProps = (dispatch) => ({
