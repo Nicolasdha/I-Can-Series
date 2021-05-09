@@ -33,10 +33,12 @@ export const startSetOrders = () => {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            console.log(doc.data());
+            console.log("penis", doc.data());
             orders.push(doc.data());
           });
         });
+      console.log("THIS DA SHITTT", orders);
+
       dispatch(setOrders(orders));
       dispatch(setOrdersId(orders));
     } catch (error) {

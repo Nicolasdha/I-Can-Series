@@ -31,13 +31,16 @@ const jsx = (
   </React.StrictMode>
 );
 
+console.log("hellow");
+
 ReactDOM.render(<LoadingPage />, document.getElementById("root"));
 
 let hasRendered = false;
 
 const setProfile = async () => {
-  await store.dispatch(startReadCharacters());
-  await store.dispatch(startSetOrders());
+  // WHY IS THIS EVEN HERE? CANT READ THE STUFF UNTIL THERES A USER, originally did so dashboard didnt re read everytime
+  // await store.dispatch(startReadCharacters());
+  // await store.dispatch(startSetOrders());
 };
 
 const renderApp = async () => {
@@ -53,11 +56,13 @@ firebase.auth().onAuthStateChanged((user) => {
 
   if (user?.providerData[0].providerId === "password") {
     if (user.emailVerified) {
+      console.log("THIS ");
       // store.dispatch(login(user.uid, user));
       renderApp();
       if (history.location.pathname === "/") {
         history.push("/dashboard");
       } else {
+        console.log("PISS ");
         // renderApp();
         // store.dispatch(logout());
         // history.push("/");
@@ -66,6 +71,7 @@ firebase.auth().onAuthStateChanged((user) => {
   } else {
     if (user) {
       store.dispatch(login(user.uid, user));
+      console.log("THAT ");
       renderApp();
       if (history.location.pathname === "/") {
         history.push("/dashboard");
@@ -73,6 +79,7 @@ firebase.auth().onAuthStateChanged((user) => {
       // store.dispatch(startSetExpenses()).then(()=>{
       //});
     } else {
+      console.log("FUCK ");
       renderApp();
       // store.dispatch(logout());
       // history.push("/");

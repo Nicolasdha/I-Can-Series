@@ -9,6 +9,7 @@ import {
   startLoginFacebook,
   startLoginTwitter,
 } from "../actions/auth";
+import { startSetOrders } from "../actions/orders";
 
 const googleLogo = "../images/googleLogo.png";
 
@@ -17,6 +18,7 @@ export const LoginPage = ({
   startLoginGoogle,
   startLoginFacebook,
   startLoginTwitter,
+  startSetOrders,
 }) => {
   const history = useHistory();
   const [email, setEmail] = useState("");
@@ -34,6 +36,8 @@ export const LoginPage = ({
         console.log("🐱", authUser.user);
         if (authUser.user.emailVerified) {
           login(authUser.user.uid, authUser.user);
+          // startSetOrders();
+
           history.push("/dashboard");
           return;
         } else {
@@ -116,6 +120,7 @@ const mapDispatchToProps = (dispatch) => ({
   startLoginGoogle: () => dispatch(startLoginGoogle()),
   startLoginFacebook: () => dispatch(startLoginFacebook()),
   startLoginTwitter: () => dispatch(startLoginTwitter()),
+  startSetOrders: () => dispatch(startSetOrders()),
 });
 
 export default connect(undefined, mapDispatchToProps)(LoginPage);

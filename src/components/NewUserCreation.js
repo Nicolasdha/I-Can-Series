@@ -8,6 +8,8 @@ import { login } from "../actions/auth";
 export const NewUserCreation = ({ login }) => {
   const history = useHistory();
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
   const [pageMessage, setPageMessage] = useState(false);
@@ -23,7 +25,12 @@ export const NewUserCreation = ({ login }) => {
       .createUserWithEmailAndPassword(email.toLowerCase().trim(), password1)
       .then((auth1) => {
         // Success
-        console.log(auth);
+        const fullName = `${firstName} ${lastName}`;
+        auth1.user.updateProfile({
+          displayName: fullName,
+        });
+
+        console.log(auth1);
         setSubmitted(true);
 
         auth.currentUser
@@ -50,6 +57,20 @@ export const NewUserCreation = ({ login }) => {
       <div className="login__container">
         <h1>New User</h1>
         <form>
+          <h5>First Name</h5>
+          <input
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <h5>Last Name</h5>
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
           <h5>E-mail</h5>
           <input
             type="text"

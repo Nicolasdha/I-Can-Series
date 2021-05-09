@@ -11,6 +11,17 @@ const stripe = require("stripe")(
 const app = express();
 
 // Middlewares
+
+var allowCrossDomain = function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:5001");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+
+  next();
+};
+
+app.use(allowCrossDomain);
 app.use(cors({ origin: true }));
 app.use(express.json());
 
@@ -23,9 +34,37 @@ app.post("/payments/create", async (req, res) => {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: total,
     currency: "usd",
+    receipt_email: "sankp001@gmail.com",
   });
   res.status(201).send({
     clientSecret: paymentIntent.client_secret,
+  });
+});
+
+app.post("/payments/sub", async (req, res) => {
+  const { email, payment_method, name } = req.body;
+
+  const customer = await stripe.customers.create({
+    payment_method,
+    email,
+    name,
+    invoice_settings: {
+      default_payment_method: payment_method,
+    },
+  });
+
+  const subscription = await stripe.subscriptions.create({
+    customer: customer.id,
+    items: [{ plan: "price_1Ip0dULFkWX2uXtIJ4lvzYA0" }],
+    expand: ["latest_invoice.payment_intent"],
+  });
+  const status = subscription["latest_invoice"]["payment_intent"]["status"];
+  const client_secret =
+    subscription["latest_invoice"]["payment_intent"]["client_secret"];
+
+  res.json({
+    client_secret: client_secret,
+    status: status,
   });
 });
 

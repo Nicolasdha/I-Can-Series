@@ -1,6 +1,6 @@
 const reducer = (state = [], action) => {
-  // console.log("Basket action", action);
-  // console.log("Basket state", state);
+  console.log("Basket action", action);
+  console.log("Basket state", state);
   switch (action.type) {
     case "ADD_TO_BASKET":
       return [...state, action.item];

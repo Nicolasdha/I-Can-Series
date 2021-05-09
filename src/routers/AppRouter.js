@@ -21,6 +21,7 @@ import CharacterSelection from "../components/CharacterSelection";
 import BookSelection from "../components/BookSelection";
 import Purchase from "../components/Purchase";
 import Payment from "../components/Payment";
+import Subscription from "../components/Subscription";
 import Orders from "../components/Orders";
 import EditCharacter from "../components/EditCharacter";
 import Basket from "../components/Basket";
@@ -49,6 +50,7 @@ const AppRouter = (
       <PrivateRoute path="/purchase" component={Purchase} />
       <PrivateRoute path="/basket" component={Basket} />
       <PrivateRoute path="/payment" component={Payment} />
+      {/* <PrivateRoute path="/subscription" component={Subscription} /> */}
       <PrivateRoute path="/orders" component={Orders} />
       {timeForSchoolRoutes}
       {timeForSleepRoutes}

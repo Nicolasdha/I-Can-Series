@@ -3,6 +3,8 @@ import { useHistory } from "react-router";
 import { connect } from "react-redux";
 import CurrencyFormat from "react-currency-format";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Product from "./Product";
 import getBasketTotal from "../selectors/basketTotal";
@@ -11,13 +13,9 @@ import { emptyBasket } from "../actions/basket";
 import { addOrder, startSetOrders } from "../actions/orders";
 import { database } from "../firebase/firebase";
 
-const Payment = ({
-  basket,
-  emptyBasket,
-  userUID,
-  addOrder,
-  startSetOrders,
-}) => {
+toast.configure();
+
+const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   const stripe = useStripe();
   const elements = useElements();
   const history = useHistory();
@@ -28,27 +26,131 @@ const Payment = ({
   const [disabledError, setDisabledError] = useState(true);
   const [disabledClientSecret, setDisabledClientSecret] = useState(true);
   const [succeeded, setsucceeded] = useState(false);
-
+  const [basketSubscription, setBasketSubscription] = useState([]);
   useEffect(() => {
+    basket?.forEach((each) => {
+      basketSubscription.push(each.item.id);
+    });
+    console.log("🇦🇿", basketSubscription);
     //Generate the client secret from Stripe that allows charge to customer, and regen if basket changes
-    const getClientSecret = async () => {
-      const response = await axios({
-        method: "post",
-        //Stripe expects total in cents so * 100
-        url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
-      });
-      setClientSecret(response.data.clientSecret);
-      setDisabledClientSecret(false);
-    };
-    getClientSecret();
+    if (basketSubscription.find((each) => each !== "subscription")) {
+      const getClientSecret = async () => {
+        const response = await axios({
+          method: "post",
+          //Stripe expects total in cents so * 100
+          url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
+        });
+        setClientSecret(response.data.clientSecret);
+        setDisabledClientSecret(false);
+      };
+      getClientSecret();
+    }
   }, [basket]);
-  console.log("THE SECRET IS >>>>", clientSecret);
   //
+  //
+  console.log("THE SECRET IS >>>>", clientSecret);
 
-  // Fancy stripe stuff with form submit
+  const CARD_ELEMENT_OPTIONS = {
+    style: {
+      base: {
+        color: "#32325d",
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: "antialiased",
+        fontSize: "16px",
+        "::placeholder": {
+          color: "#aab7c4",
+        },
+      },
+      invalid: {
+        color: "#fa755a",
+        iconColor: "#fa755a",
+      },
+    },
+  };
+
+  const handleSubscription = async (e) => {
+    e.preventDefault();
+    setProcessing(true);
+    if (!stripe || !elements) {
+      //Stripe hasnt loaded yet
+      return;
+    }
+
+    const result = await stripe.createPaymentMethod({
+      type: "card",
+      card: elements.getElement(CardElement),
+      billing_details: {
+        name: user.user.providerData[0].displayName,
+        email: user.user.providerData[0].email,
+      },
+    });
+    if (result.error) {
+      console.log("EREOORR", result.error);
+    } else {
+      // const response = await axios({
+      //   method: "post",
+      //   //Stripe expects total in cents so * 100
+      //   url: `/payments/sub`,
+      //   payment_method: result.paymentMethod.id,
+      //   email: user.user.email,
+      // });
+      console.log("THIS IS THE RESULT SHIT", result);
+      const response = await axios.post("/payments/sub", {
+        payment_method: result.paymentMethod.id,
+        email: user.user.email,
+        name: user.user.providerData[0].displayName,
+      });
+      console.log("REPSONSE", response);
+
+      if (response.data.status === "requires_action") {
+        console.log("inside the requires_action");
+        stripe
+          .confirmCardPayment(response.data.client_secret, {
+            payment_method: {
+              //Find Card element
+              card: elements.getElement(CardElement),
+              billing_details: {
+                name: user.user.providerData[0].displayName,
+                email: user.user.providerData[0].email,
+              },
+            },
+          })
+          .then((result) => {
+            if (result.error) {
+              console.log("ERRORR", result.error);
+              toast("Something went wrong 😤", {
+                type: "error",
+              });
+            } else {
+              toast("Success! Please visit the Dashboard to get reading!", {
+                type: "success",
+              });
+              console.log("GOT INTO THE SUCCEEDED LOOP");
+              startSetOrders();
+              emptyBasket();
+              history.replace("/orders");
+            }
+          });
+      } else {
+        toast("Success! Please visit the Dashboard to get reading!", {
+          type: "success",
+        });
+        console.log("GOT KICKED OUT OF SUCCEED LOOP");
+        startSetOrders();
+        emptyBasket();
+        history.replace("/orders");
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setProcessing(true);
+
+    if (!stripe || !elements) {
+      //Stripe hasnt loaded yet
+      return;
+    }
 
     //Uses the client screnet for how much to charge
     const payload = await stripe
@@ -56,18 +158,28 @@ const Payment = ({
         payment_method: {
           //Find Card element
           card: elements.getElement(CardElement),
+          billing_details: {
+            name: user.user.displayName,
+            email: user.user.email,
+          },
         },
       })
-      .then(({ paymentIntent }) => {
+      .then(({ paymentIntent, error }) => {
         // look at this object
         //paymentIntent = payent confiramtion
-        console.log("🐱", paymentIntent);
+        if (error) {
+          setProcessing(false);
+          throw new Error(error.message);
+        }
+        toast("Success! Please visit the Dashboard to get reading!", {
+          type: "success",
+        });
         setsucceeded(true);
         setError(null);
         setProcessing(false);
         database
           .collection("users")
-          .doc(userUID)
+          .doc(user.uid)
           .collection("orders")
           .doc(paymentIntent.id)
           .set({
@@ -82,7 +194,8 @@ const Payment = ({
         history.replace("/orders");
       })
       .catch((e) => {
-        console.log(e);
+        toast("Something went wrong", { type: "error" });
+        setError(e.message);
       });
   };
 
@@ -111,7 +224,7 @@ const Payment = ({
         : "Please add something to your basket"}
 
       <form onSubmit={handleSubmit}>
-        <CardElement onChange={handleChange} />
+        <CardElement options={CARD_ELEMENT_OPTIONS} onChange={handleChange} />
         <div className="payment__priceContainer">
           <CurrencyFormat
             renderText={(value) => (
@@ -132,6 +245,12 @@ const Payment = ({
           >
             <span>{processing ? <p>Processing</p> : "Buy Now"}</span>
           </button>
+          <button
+            disabled={processing || disabledError || succeeded}
+            onClick={handleSubscription}
+          >
+            {processing ? <p>Processing</p> : "Buy Subscription"}
+          </button>
         </div>
 
         {error && <div>{error}</div>}
@@ -141,7 +260,7 @@ const Payment = ({
 };
 
 const mapStoreToProps = (state, props) => ({
-  userUID: state.authentication.uid,
+  user: state.authentication,
   basket: state.basket,
 });
 

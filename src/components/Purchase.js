@@ -7,6 +7,14 @@ import Product from "./Product";
 const Purchase = (props) => {
   return (
     <div>
+      {/* <h2>
+        Monthly subscription - Get access to exclusive content and all books
+      </h2>
+      <p>$99.99</p>
+      <Link to="/subscription">
+        <button>Learn more</button>
+      </Link> */}
+
       <Product
         id="sleep"
         title="Time for Sleep Series - 7 Books on how to initiate bedtime"
