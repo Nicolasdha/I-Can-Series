@@ -52,11 +52,13 @@ const Product = ({
   return (
     <div>
       <h1>{title}</h1>
+      <img src={image} />
       <h3>{price}</h3>
-      <p>{image}</p>
+
+      <br></br>
 
       {id === "subscription" && !hideButton && (
-        <button disabled={false} onClick={addToBasketClick}>
+        <button disabled={subscription} onClick={addToBasketClick}>
           Add to basket
         </button>
       )}
@@ -64,7 +66,7 @@ const Product = ({
         <button onClick={removeFromBasketClick}>remove</button>
       )}
       {id === "sleep" && !hideButton && (
-        <button disabled={false} onClick={addToBasketClick}>
+        <button disabled={sleep} onClick={addToBasketClick}>
           Add to basket
         </button>
       )}
@@ -72,7 +74,7 @@ const Product = ({
         <button onClick={removeFromBasketClick}>remove</button>
       )}
       {id === "school" && !hideButton && (
-        <button disabled={false} onClick={addToBasketClick}>
+        <button disabled={school} onClick={addToBasketClick}>
           Add to basket
         </button>
       )}

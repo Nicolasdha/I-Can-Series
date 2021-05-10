@@ -27,8 +27,8 @@ const BookSelection = ({ orders }) => {
 
       {subscription && (
         <div>
-          <TimeForSchool />
           <TimeForSleep />
+          <TimeForSchool />
         </div>
       )}
       {!subscription && sleep && (
@@ -40,6 +40,9 @@ const BookSelection = ({ orders }) => {
         <div>
           <TimeForSchool />
         </div>
+      )}
+      {!subscription && !school && !sleep && (
+        <p>Please purchase a book to get reading!!</p>
       )}
     </div>
   );

@@ -5,8 +5,6 @@ import Product from "./Product";
 import Subtotal from "./Subtotal";
 
 const Basket = ({ basket }) => {
-  console.log(basket);
-
   return (
     <div>
       {basket.length !== 0

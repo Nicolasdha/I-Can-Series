@@ -5,15 +5,22 @@ const reducer = (state = [], action) => {
     case "ADD_ORDER":
       return [...state, action.order];
     case "SET_ORDERS":
-      return [...state, { orders: action.orders }];
-    case "SET_ORDERS_ID":
       const orders = [];
       action.orders.map((each, index) => {
         each.basket.forEach((eachItem) => {
           orders.push(eachItem.item.id);
         });
       });
-      return [...state, { orderIds: orders }];
+      return [{ orders: action.orders }, { orderIds: orders }];
+    //case "SET_ORDERS_ID":
+    // const orders = [];
+    // action.orders.map((each, index) => {
+    //   each.basket.forEach((eachItem) => {
+    //     orders.push(eachItem.item.id);
+    //   });
+    // });
+    //return state;
+    //[{ orderIds: orders }];
     case "WIPE_ORDERS":
       return [];
     default:

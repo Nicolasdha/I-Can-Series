@@ -14,12 +14,12 @@ const setOrders = (orders) => {
   };
 };
 
-const setOrdersId = (orders) => {
-  return {
-    type: "SET_ORDERS_ID",
-    orders,
-  };
-};
+// const setOrdersId = (orders) => {
+//   return {
+//     type: "SET_ORDERS_ID",
+//     orders,
+//   };
+// };
 
 export const startSetOrders = () => {
   return async (dispatch, getState) => {
@@ -33,14 +33,11 @@ export const startSetOrders = () => {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            console.log("penis", doc.data());
             orders.push(doc.data());
           });
         });
-      console.log("THIS DA SHITTT", orders);
 
       dispatch(setOrders(orders));
-      dispatch(setOrdersId(orders));
     } catch (error) {
       console.log(error);
       window.alert("Unable to perform action please try again");

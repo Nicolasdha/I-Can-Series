@@ -41,6 +41,14 @@ app.post("/payments/create", async (req, res) => {
   });
 });
 
+app.post("/payments/sub/cancel", async (req, res) => {
+  const { subscriptionId } = req.body;
+  const deleteSub = await stripe.subscriptions.del(subscriptionId);
+
+  // Need to delete sub from DB
+  console.log(deleteSub);
+});
+
 app.post("/payments/sub", async (req, res) => {
   const { email, payment_method, name } = req.body;
 
@@ -52,19 +60,28 @@ app.post("/payments/sub", async (req, res) => {
       default_payment_method: payment_method,
     },
   });
-
+  console.log("THIS IS CUSTOMER", customer);
   const subscription = await stripe.subscriptions.create({
     customer: customer.id,
-    items: [{ plan: "price_1Ip0dULFkWX2uXtIJ4lvzYA0" }],
+    items: [{ plan: "price_1IpdjjLFkWX2uXtIFsROULtY" }],
     expand: ["latest_invoice.payment_intent"],
   });
+  console.log("MEOWMEOW", subscription);
   const status = subscription["latest_invoice"]["payment_intent"]["status"];
   const client_secret =
     subscription["latest_invoice"]["payment_intent"]["client_secret"];
+  const paymentIntent = subscription["latest_invoice"]["payment_intent"]["id"];
+  const amount = subscription["latest_invoice"]["payment_intent"]["amount"];
+  const created = subscription["latest_invoice"]["payment_intent"]["created"];
+  const subscriptionId = subscription["id"];
 
   res.json({
-    client_secret: client_secret,
-    status: status,
+    client_secret,
+    status,
+    paymentIntent,
+    amount,
+    created,
+    subscriptionId,
   });
 });
 

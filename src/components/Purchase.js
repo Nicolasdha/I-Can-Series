@@ -1,7 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-
+import book1 from "../images/book1.png";
+import book2 from "../images/book2.jpeg";
+import book3 from "../images/book3.png";
 import Product from "./Product";
 
 const Purchase = (props) => {
@@ -19,21 +21,21 @@ const Purchase = (props) => {
         id="sleep"
         title="Time for Sleep Series - 7 Books on how to initiate bedtime"
         price={49.99}
-        image="https://images-na.ssl-images-amazon.com/images/I/61TiYyagO9L._AC_SX355_.jpg"
+        image={book1}
         key={1}
       />
       <Product
         id="school"
         title="Time for School Series - 7 Books on how to initiate school time"
         price={49.99}
-        image="https://images-na.ssl-images-amazon.com/images/I/61TiYyagO9L._AC_SX355_.jpg"
+        image={book2}
         key={2}
       />
       <Product
         id="subscription"
         title="Monthly subscription - Get access to exclusive content and all books"
-        price={99.99}
-        image="https://images-na.ssl-images-amazon.com/images/I/61TiYyagO9L._AC_SX355_.jpg"
+        price={199.99}
+        image={book3}
         key={3}
       />
       <p>Basket length</p>

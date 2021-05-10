@@ -4,8 +4,8 @@ const defaultState = {
 };
 
 export default (state = defaultState, action) => {
-  console.log("Character action", action);
-  console.log("Character state", state);
+  // console.log("Character action", action);
+  // console.log("Character state", state);
   switch (action.type) {
     case "CREATE_CHARACTER":
       state.characters.push(action.character);

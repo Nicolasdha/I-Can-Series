@@ -27,16 +27,13 @@ export const LoginPage = ({
 
   const signIn = (e) => {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
 
     auth
       .signInWithEmailAndPassword(email.toLowerCase().trim(), password)
       .then((authUser) => {
-        console.log("🐱", authUser.user);
         if (authUser.user.emailVerified) {
           login(authUser.user.uid, authUser.user);
-          // startSetOrders();
+          startSetOrders();
 
           history.push("/dashboard");
           return;
@@ -104,10 +101,10 @@ export const LoginPage = ({
         </button>
         <br></br>
         <br></br>
-        <button className="button button--login" onClick={startLoginTwitter}>
+        {/* <button className="button button--login" onClick={startLoginTwitter}>
           <img className="button__image" src="/images/twitterLogo.png" />
           Login with Twitter
-        </button>
+        </button> */}
         <br></br> <br></br>
         <button onClick={resetPassword}>Reset Password</button>
       </div>

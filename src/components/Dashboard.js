@@ -18,11 +18,10 @@ function Dashboard(props) {
       // //Database limit on three rewrites ASAP I think every thrid one is not happening
 
       await props.startReadCharacters();
-      await props.startSetOrders();
+      // await props.startSetOrders();
       setRender(true);
     };
     setProfile();
-    // props.startSetOrders();
   }, []);
 
   const removeCharacter = (e) => {
@@ -54,7 +53,7 @@ function Dashboard(props) {
             <h2>Books to buy</h2>
           </Link>
 
-          <Link to="/login"> Go lgin</Link>
+          {/* <Link to="/login"> Go lgin</Link> */}
         </div>
       ) : (
         <LoadingPage />
@@ -71,7 +70,6 @@ const mapDispatchToProps = (dispatch) => ({
   startReadCharacters: () => dispatch(startReadCharacters()),
   startSetOrders: () => dispatch(startSetOrders()),
   startRemoveCharacter: (id) => dispatch(startRemoveCharacter(id)),
-  startSetOrders: () => dispatch(startSetOrders()),
 });
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Dashboard);

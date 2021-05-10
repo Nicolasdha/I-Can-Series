@@ -31,7 +31,6 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
     basket?.forEach((each) => {
       basketSubscription.push(each.item.id);
     });
-    console.log("🇦🇿", basketSubscription);
     //Generate the client secret from Stripe that allows charge to customer, and regen if basket changes
     if (basketSubscription.find((each) => each !== "subscription")) {
       const getClientSecret = async () => {
@@ -48,7 +47,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   }, [basket]);
   //
   //
-  console.log("THE SECRET IS >>>>", clientSecret);
+  //console.log("THE SECRET IS >>>>", clientSecret);
 
   const CARD_ELEMENT_OPTIONS = {
     style: {
@@ -94,7 +93,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
       //   payment_method: result.paymentMethod.id,
       //   email: user.user.email,
       // });
-      console.log("THIS IS THE RESULT SHIT", result);
+      // console.log("THIS IS THE RESULT SHIT", result);
       const response = await axios.post("/payments/sub", {
         payment_method: result.paymentMethod.id,
         email: user.user.email,
@@ -103,7 +102,6 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
       console.log("REPSONSE", response);
 
       if (response.data.status === "requires_action") {
-        console.log("inside the requires_action");
         stripe
           .confirmCardPayment(response.data.client_secret, {
             payment_method: {
@@ -115,27 +113,49 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
               },
             },
           })
-          .then((result) => {
+          .then(async (result) => {
+            console.log("THIS IS RESULY", result);
             if (result.error) {
               console.log("ERRORR", result.error);
               toast("Something went wrong 😤", {
                 type: "error",
               });
             } else {
+              await database
+                .collection("users")
+                .doc(user.uid)
+                .collection("orders")
+                .doc(result.paymentIntent.id)
+                .set({
+                  basket: basket,
+                  amount: result.paymentIntent.amount,
+                  created: result.paymentIntent.created,
+                  subscriptionId: response.data.subscriptionId,
+                });
               toast("Success! Please visit the Dashboard to get reading!", {
                 type: "success",
               });
-              console.log("GOT INTO THE SUCCEEDED LOOP");
               startSetOrders();
               emptyBasket();
               history.replace("/orders");
             }
           });
       } else {
+        console.log("THIS IS RESPONSE", response);
+        await database
+          .collection("users")
+          .doc(user.uid)
+          .collection("orders")
+          .doc(response.data.paymentIntent)
+          .set({
+            basket: basket,
+            amount: response.data.amount,
+            created: response.data.created,
+            subscriptionId: response.data.subscriptionId,
+          });
         toast("Success! Please visit the Dashboard to get reading!", {
           type: "success",
         });
-        console.log("GOT KICKED OUT OF SUCCEED LOOP");
         startSetOrders();
         emptyBasket();
         history.replace("/orders");
@@ -189,9 +209,9 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
           });
       })
       .then(() => {
+        history.replace("/orders");
         startSetOrders();
         emptyBasket();
-        history.replace("/orders");
       })
       .catch((e) => {
         toast("Something went wrong", { type: "error" });
