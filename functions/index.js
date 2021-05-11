@@ -46,7 +46,9 @@ app.post("/payments/sub/cancel", async (req, res) => {
   const deleteSub = await stripe.subscriptions.del(subscriptionId);
 
   // Need to delete sub from DB
-  console.log(deleteSub);
+  console.log("DELETED", deleteSub);
+  const status = deleteSub["status"];
+  res.status(200).send({ status });
 });
 
 app.post("/payments/sub", async (req, res) => {
@@ -66,7 +68,7 @@ app.post("/payments/sub", async (req, res) => {
     items: [{ plan: "price_1IpdjjLFkWX2uXtIFsROULtY" }],
     expand: ["latest_invoice.payment_intent"],
   });
-  console.log("MEOWMEOW", subscription);
+  console.log("CREATED SUB", subscription);
   const status = subscription["latest_invoice"]["payment_intent"]["status"];
   const client_secret =
     subscription["latest_invoice"]["payment_intent"]["client_secret"];
