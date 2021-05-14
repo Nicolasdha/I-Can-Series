@@ -50,7 +50,7 @@ const AppRouter = (
       <PrivateRoute path="/purchase" component={Purchase} />
       <PrivateRoute path="/basket" component={Basket} />
       <PrivateRoute path="/payment" component={Payment} />
-      {/* <PrivateRoute path="/subscription" component={Subscription} /> */}
+      <PrivateRoute path="/subscription" component={Subscription} />
       <PrivateRoute path="/orders" component={Orders} />
       {timeForSchoolRoutes}
       {timeForSleepRoutes}

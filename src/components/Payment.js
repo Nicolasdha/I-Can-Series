@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router";
 import { connect } from "react-redux";
 import CurrencyFormat from "react-currency-format";
@@ -19,6 +19,8 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   const stripe = useStripe();
   const elements = useElements();
   const history = useHistory();
+  const paypal = useRef();
+  const paypalSubscription = useRef();
 
   const [error, setError] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
@@ -28,6 +30,62 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   const [succeeded, setsucceeded] = useState(false);
   const [basketSubscription, setBasketSubscription] = useState([]);
   useEffect(() => {
+    window.paypal
+      .Buttons({
+        createOrder: (data, actions, err) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log("THIS IS THE CREATEORDER DATA ", data);
+          return actions.order.create({
+            intent: "CAPTURE",
+            purchase_units: [
+              {
+                description: "The I Can Series",
+                amount: {
+                  value: getBasketTotal(basket),
+                },
+              },
+            ],
+          });
+        },
+        onApprove: async (data, actions, err) => {
+          if (err) {
+            console.log(err);
+          }
+          const details = await actions.order.capture();
+          console.log("THESE ARE THE DEATILS", details);
+          console.log("THESE ARE THE DATA", data);
+          if (details.status === "COMPLETED") {
+            await database
+              .collection("users")
+              .doc(user.uid)
+              .collection("orders")
+              .doc(details.id)
+              .set({
+                paymentMethod: "PayPal",
+                basket: basket,
+                amount: details.purchase_units[0].amount.value,
+                created: details.update_time,
+              });
+            toast("Success! Please visit the Dashboard to get reading!", {
+              type: "success",
+            });
+            startSetOrders();
+            emptyBasket();
+            history.replace("/orders");
+          }
+        },
+        onCancel: () => {
+          toast("Something went wrong", { type: "error" });
+        },
+        onError: (err) => {
+          toast("Something went wrong", { type: "error" });
+          console.log(err);
+        },
+      })
+      .render(paypal.current);
+
     basket?.forEach((each) => {
       basketSubscription.push(each.item.id);
     });
@@ -127,6 +185,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
                 .collection("orders")
                 .doc(result.paymentIntent.id)
                 .set({
+                  paymentMethod: "Stripe",
                   basket: basket,
                   amount: result.paymentIntent.amount,
                   created: result.paymentIntent.created,
@@ -148,6 +207,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
           .collection("orders")
           .doc(response.data.paymentIntent)
           .set({
+            paymentMethod: "Stripe",
             basket: basket,
             amount: response.data.amount,
             created: response.data.created,
@@ -203,6 +263,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
           .collection("orders")
           .doc(paymentIntent.id)
           .set({
+            paymentMethod: "Stripe",
             basket: basket,
             amount: paymentIntent.amount,
             created: paymentIntent.created,
@@ -274,6 +335,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
         </div>
 
         {error && <div>{error}</div>}
+        <div ref={paypal}></div>
       </form>
     </div>
   );

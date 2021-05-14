@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
+import PersonIcon from "@material-ui/icons/Person";
+
 import { auth } from "../firebase/firebase";
 import {
   login,
@@ -11,7 +13,8 @@ import {
 } from "../actions/auth";
 import { startSetOrders } from "../actions/orders";
 
-const googleLogo = "../images/googleLogo.png";
+import googleLogo from "../images/googleLogo.png";
+import facebookLogo from "../images/facebookLogo.png";
 
 export const LoginPage = ({
   login,
@@ -60,12 +63,14 @@ export const LoginPage = ({
         <form>
           <h5>E-mail</h5>
           <input
+            className="login__input"
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <h5>Password</h5>
           <input
+            className="login__input"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -79,34 +84,33 @@ export const LoginPage = ({
           </button>
           {signInError && <h2>{signInError}</h2>}
         </form>
-        <br></br>
         <button
+          className="login__signInButton"
           onClick={() => {
             history.push("/createNewUser");
           }}
         >
+          <PersonIcon className="loginButton__image" />
           New User Creation?
         </button>
-        <br></br>
-        <br></br>
-        <button className="button button--login" onClick={startLoginGoogle}>
-          <img className="button__image" src="{googleLogo}" />
+        <button className="login__signInButton" onClick={startLoginGoogle}>
+          <img className="loginButton__image" src={googleLogo} />
           Login with Google
         </button>
-        <br></br>
-        <br></br>
-        <button className="button button--login" onClick={startLoginFacebook}>
-          <img className="button__image" src="/images/facebookLogo.png" />
+        <button className="login__signInButton" onClick={startLoginFacebook}>
+          <img className="loginButton__image" src={facebookLogo} />
           Login with Facebook
         </button>
-        <br></br>
-        <br></br>
         {/* <button className="button button--login" onClick={startLoginTwitter}>
           <img className="button__image" src="/images/twitterLogo.png" />
           Login with Twitter
         </button> */}
-        <br></br> <br></br>
-        <button onClick={resetPassword}>Reset Password</button>
+        <button
+          className="login__signInButton login__signInButton--forgot"
+          onClick={resetPassword}
+        >
+          <em>Forgot Password</em>
+        </button>
       </div>
     </div>
   );
