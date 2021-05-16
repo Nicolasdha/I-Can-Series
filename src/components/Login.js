@@ -56,63 +56,83 @@ export const LoginPage = ({
     history.push("/reset");
   };
 
+  const facebookLogin = async () => {
+    try {
+      const facebook1 = await startLoginFacebook();
+    } catch (error) {
+      setSignInError(
+        `An account already exists with the same email address but different sign-in credentials. Sign out on Facebook.com, and sign back in to your profile using this application.`
+      );
+    }
+  };
+
   return (
-    <div className="login">
-      <div className="login__container">
-        <h1>Sign-in</h1>
-        <form>
-          <h5>E-mail</h5>
-          <input
-            className="login__input"
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <h5>Password</h5>
-          <input
-            className="login__input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button
-            className="login__signInButton"
-            type="submit"
-            onClick={signIn}
-          >
-            Sign in
+    <>
+      <div className="login">
+        <div className="login__container">
+          <h1>Sign-in</h1>
+          <form>
+            <h5>E-mail</h5>
+            <input
+              className="login__input"
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <h5>Password</h5>
+            <input
+              className="login__input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              className="login__signInButton"
+              type="submit"
+              onClick={signIn}
+            >
+              Sign in
+            </button>
+          </form>
+
+          <button className="login__signInButton" onClick={startLoginGoogle}>
+            <img className="loginButton__image" src={googleLogo} />
+            Login with Google
           </button>
-          {signInError && <h2>{signInError}</h2>}
-        </form>
-        <button
-          className="login__signInButton"
-          onClick={() => {
-            history.push("/createNewUser");
-          }}
-        >
-          <PersonIcon className="loginButton__image" />
-          New User Creation?
-        </button>
-        <button className="login__signInButton" onClick={startLoginGoogle}>
-          <img className="loginButton__image" src={googleLogo} />
-          Login with Google
-        </button>
-        <button className="login__signInButton" onClick={startLoginFacebook}>
-          <img className="loginButton__image" src={facebookLogo} />
-          Login with Facebook
-        </button>
-        {/* <button className="button button--login" onClick={startLoginTwitter}>
+          <button className="login__signInButton" onClick={facebookLogin}>
+            <img className="loginButton__image" src={facebookLogo} />
+            Login with Facebook
+          </button>
+          {/* <button className="button button--login" onClick={startLoginTwitter}>
           <img className="button__image" src="/images/twitterLogo.png" />
           Login with Twitter
         </button> */}
-        <button
-          className="login__signInButton login__signInButton--forgot"
-          onClick={resetPassword}
-        >
-          <em>Forgot Password</em>
-        </button>
+          <button
+            className="login__signInButton"
+            onClick={() => {
+              history.push("/createNewUser");
+            }}
+          >
+            <PersonIcon className="loginButton__image" />
+            New User Creation?
+          </button>
+          <button
+            className="login__signInButton login__signInButton--forgot"
+            onClick={resetPassword}
+          >
+            <em>Forgot Password</em>
+          </button>
+        </div>
       </div>
-    </div>
+
+      <div className="login__error">
+        {signInError && (
+          <p className="login__error--message">
+            <em>{signInError}</em>
+          </p>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -1,0 +1,22 @@
+.header {
+  background-color: rgba(133, 50, 133, 0.844);
+  height: 50px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.header--link {
+  color: white;
+  margin-right: 2%;
+  font-size: 1.2rem;
+  text-decoration: none;
+  &:hover {
+    color: darken($off-white, 15%);
+    transform: scale(1.03);
+  }
+  &:last-of-type {
+    margin-right: 3%;
+  }
+}

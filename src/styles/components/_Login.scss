@@ -1,7 +1,6 @@
 .login {
   display: flex;
   justify-content: center;
-  text-align: center;
 }
 
 .loginButton__image {
@@ -43,4 +42,18 @@
   border: 1px solid rgba(0, 0, 0, 0.267);
   width: 200px;
   height: 20px;
+}
+
+.login__error {
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.login__error--message {
+  line-height: 150%;
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
 }

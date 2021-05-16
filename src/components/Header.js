@@ -13,24 +13,35 @@ const Header = ({
   emptyBasket,
   logout,
   wipeOrders,
+  user,
 }) => {
   return (
-    <div>
-      <Link to="/">Login</Link>
-      <button
-        onClick={() => {
-          wipeCharacters();
-          wipeOrders();
-          startLogout();
-          logout();
-          emptyBasket();
-        }}
-      >
-        LOGOUT
-      </button>
-      <Link to="/userProfile">Profile</Link>
-      {"               "}
-      <Link to="/dashboard">Dashboard</Link>
+    <div className="header">
+      <Link className="header--link" to="/dashboard">
+        Dashboard
+      </Link>
+      <Link className="header--link" to="/userProfile">
+        Profile
+      </Link>
+
+      {user.uid ? (
+        <Link
+          className="header--link"
+          onClick={() => {
+            wipeCharacters();
+            wipeOrders();
+            startLogout();
+            logout();
+            emptyBasket();
+          }}
+        >
+          Logout
+        </Link>
+      ) : (
+        <Link className="header--link" to="/">
+          Login
+        </Link>
+      )}
     </div>
   );
 };
@@ -42,4 +53,9 @@ const mapDispatchToProps = (dispatch) => ({
   emptyBasket: () => dispatch(emptyBasket()),
   wipeOrders: () => dispatch(wipeOrders()),
 });
-export default connect(undefined, mapDispatchToProps)(Header);
+
+const mapStoreToProps = (state, props) => ({
+  user: state.authentication,
+});
+
+export default connect(mapStoreToProps, mapDispatchToProps)(Header);

@@ -96,6 +96,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
           method: "post",
           //Stripe expects total in cents so * 100
           url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
+          params: { email: user.user.email },
         });
         setClientSecret(response.data.clientSecret);
         setDisabledClientSecret(false);

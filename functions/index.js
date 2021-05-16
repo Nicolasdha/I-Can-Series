@@ -27,15 +27,23 @@ app.use(express.json());
 
 //API routes
 app.get("/", (req, res) => res.status(200).send("hellow! world"));
+
 app.post("/payments/create", async (req, res) => {
+  const email = req.query.email;
   const total = req.query.total;
   console.log("Payment request received - ", total);
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: total,
     currency: "usd",
-    receipt_email: "sankp001@gmail.com",
+    receipt_email: email,
   });
+  console.log(paymentIntent);
+  const paymentUpdate = await stripe.paymentIntents.update(paymentIntent.id, {
+    receipt_email: email,
+  });
+
+  console.log(paymentIntent);
   res.status(201).send({
     clientSecret: paymentIntent.client_secret,
   });
