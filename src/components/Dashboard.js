@@ -9,6 +9,7 @@ import {
 
 import { startSetOrders } from "../actions/orders";
 import LoadingPage from "./LoadingPage";
+import Header from "../components/Header";
 
 function Dashboard(props) {
   const [render, setRender] = useState(false);
@@ -29,35 +30,38 @@ function Dashboard(props) {
   };
 
   return (
-    <div>
-      {render ? (
-        <div>
-          <h1>Dashboard</h1>
-          <Link to="/characterSelection"> Create character</Link>
+    <div className="dashboard">
+      <Header />
+      <div>
+        {render ? (
+          <div>
+            <h1>Dashboard</h1>
+            <Link to="/characterSelection"> Create character</Link>
 
-          {props.stateCharacters.characters?.map((each, index) => {
-            return (
-              <div key={index}>
-                <Character key={index + 100} character={each} />
-                <Link to={`/edit/${each.nickname}`}>
-                  <button>Edit</button>
-                </Link>
-                <button value={each.id} onClick={removeCharacter}>
-                  Remove
-                </button>
-              </div>
-            );
-          })}
+            {props.stateCharacters.characters?.map((each, index) => {
+              return (
+                <div key={index}>
+                  <Character key={index + 100} character={each} />
+                  <Link to={`/edit/${each.nickname}`}>
+                    <button>Edit</button>
+                  </Link>
+                  <button value={each.id} onClick={removeCharacter}>
+                    Remove
+                  </button>
+                </div>
+              );
+            })}
 
-          <Link to="/purchase">
-            <h2>Books to buy</h2>
-          </Link>
+            <Link to="/purchase">
+              <h2>Books to buy</h2>
+            </Link>
 
-          {/* <Link to="/login"> Go lgin</Link> */}
-        </div>
-      ) : (
-        <LoadingPage />
-      )}
+            {/* <Link to="/login"> Go lgin</Link> */}
+          </div>
+        ) : (
+          <LoadingPage />
+        )}
+      </div>
     </div>
   );
 }

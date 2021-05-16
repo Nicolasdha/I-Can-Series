@@ -35,7 +35,7 @@ export const history = createBrowserHistory();
 const AppRouter = (
   // Need <Router history={history}/> here but idk why
   <Router history={history}>
-    <Header />
+    {/* <Header /> */}
     <Switch>
       <Route exact={true} path="/" component={Login} />
       <Route path="/createNewUser" component={NewUserCreation} />

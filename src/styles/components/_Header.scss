@@ -1,22 +1,54 @@
 .header {
-  background-color: rgba(133, 50, 133, 0.844);
-  height: 50px;
-  width: 100vw;
+  background-color: #111940;
+  height: 100vh;
+  width: 13vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+.header__top {
+  color: #f1f4fc;
+  border-bottom: 1px solid white;
+  width: 100%;
+  padding-left: 15%;
+}
+
+.header__top--details {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+}
+
+.MuiSvgIcon-root {
+  color: red;
+  margin-right: 15px;
+}
+
+.header__body {
+  font-size: 1.1rem;
+
+  margin-top: 10%;
+  margin-left: 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .header--link {
-  color: white;
-  margin-right: 2%;
-  font-size: 1.2rem;
+  color: #f1f4fc;
   text-decoration: none;
+  margin-bottom: 10%;
+  display: flex;
+  align-items: center;
   &:hover {
     color: darken($off-white, 15%);
     transform: scale(1.03);
   }
-  &:last-of-type {
-    margin-right: 3%;
-  }
+}
+
+.dashboard {
+  display: flex;
 }
