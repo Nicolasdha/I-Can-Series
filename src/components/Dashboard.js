@@ -30,37 +30,40 @@ function Dashboard(props) {
   };
 
   return (
-    <div className="dashboard">
+    <div className="container">
       <Header />
-      <div>
-        {render ? (
-          <div>
-            <h1>Dashboard</h1>
-            <Link to="/characterSelection"> Create character</Link>
 
-            {props.stateCharacters.characters?.map((each, index) => {
-              return (
-                <div key={index}>
-                  <Character key={index + 100} character={each} />
-                  <Link to={`/edit/${each.nickname}`}>
-                    <button>Edit</button>
-                  </Link>
-                  <button value={each.id} onClick={removeCharacter}>
-                    Remove
-                  </button>
-                </div>
-              );
-            })}
+      <div className="dashboard">
+        <div className="dashboard__body">
+          {render ? (
+            <div>
+              <h1>Dashboard</h1>
+              {/* <Link to="/characterSelection"> Create character</Link> */}
 
-            <Link to="/purchase">
+              {props.stateCharacters.characters?.map((each, index) => {
+                return (
+                  <div key={index}>
+                    <Character key={index + 100} character={each} />
+                    <Link to={`/edit/${each.nickname}`}>
+                      <button>Edit</button>
+                    </Link>
+                    <button value={each.id} onClick={removeCharacter}>
+                      Remove
+                    </button>
+                  </div>
+                );
+              })}
+
+              {/* <Link to="/purchase">
               <h2>Books to buy</h2>
-            </Link>
+            </Link> */}
 
-            {/* <Link to="/login"> Go lgin</Link> */}
-          </div>
-        ) : (
-          <LoadingPage />
-        )}
+              {/* <Link to="/login"> Go lgin</Link> */}
+            </div>
+          ) : (
+            <LoadingPage />
+          )}
+        </div>
       </div>
     </div>
   );
