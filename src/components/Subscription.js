@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Product from "./Product";
 import getBasketTotal from "../selectors/basketTotal";
-import axios from "../axios/axios";
+import axios, { paypalStart } from "../axios/axios";
 import { emptyBasket } from "../actions/basket";
 import { addOrder, startSetOrders } from "../actions/orders";
 import { database } from "../firebase/firebase";
@@ -30,6 +30,13 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   const [succeeded, setsucceeded] = useState(false);
   const [basketSubscription, setBasketSubscription] = useState([]);
   useEffect(() => {
+    // const getBearerToken = async () => {
+    //   const bearerToken = await axios.post("/v1/oauth2/token");
+    //   console.log(bearerToken);
+    //   //Want a piece of state for this?
+    // };
+    // getBearerToken();
+
     window.paypal
       .Buttons({
         style: {
@@ -273,6 +280,10 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
     setDisabledError(e.empty);
     setError(e.error ? e.error.message : "");
   };
+
+  // const oneTimePayment = async () => {
+  //   const response = await axios.post("/v2/checkout/orders");
+  // };
 
   return (
     <div>

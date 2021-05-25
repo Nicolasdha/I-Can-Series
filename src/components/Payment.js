@@ -30,61 +30,68 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   const [succeeded, setsucceeded] = useState(false);
   const [basketSubscription, setBasketSubscription] = useState([]);
   useEffect(() => {
-    window.paypal
-      .Buttons({
-        createOrder: (data, actions, err) => {
-          if (err) {
-            console.log(err);
-          }
-          console.log("THIS IS THE CREATEORDER DATA ", data);
-          return actions.order.create({
-            intent: "CAPTURE",
-            purchase_units: [
-              {
-                description: "The I Can Series",
-                amount: {
-                  value: getBasketTotal(basket),
-                },
-              },
-            ],
-          });
-        },
-        onApprove: async (data, actions, err) => {
-          if (err) {
-            console.log(err);
-          }
-          const details = await actions.order.capture();
-          console.log("THESE ARE THE DEATILS", details);
-          console.log("THESE ARE THE DATA", data);
-          if (details.status === "COMPLETED") {
-            await database
-              .collection("users")
-              .doc(user.uid)
-              .collection("orders")
-              .doc(details.id)
-              .set({
-                paymentMethod: "PayPal",
-                basket: basket,
-                amount: details.purchase_units[0].amount.value,
-                created: details.update_time,
-              });
-            toast("Success! Please visit the Dashboard to get reading!", {
-              type: "success",
-            });
-            startSetOrders();
-            emptyBasket();
-            history.replace("/orders");
-          }
-        },
-        onCancel: () => {
-          toast("Something went wrong", { type: "error" });
-        },
-        onError: (err) => {
-          toast("Something went wrong", { type: "error" });
-          console.log(err);
-        },
-      })
-      .render(paypal.current);
+    const getBearerToken = async () => {
+      const bearerToken = await axios.post("/v1/oauth2/token");
+      console.log(bearerToken);
+      //Want a piece of state for this?
+    };
+    getBearerToken();
+
+    // window.paypal
+    //   .Buttons({
+    //     createOrder: (data, actions, err) => {
+    //       if (err) {
+    //         console.log(err);
+    //       }
+    //       console.log("THIS IS THE CREATEORDER DATA ", data);
+    //       return actions.order.create({
+    //         intent: "CAPTURE",
+    //         purchase_units: [
+    //           {
+    //             description: "The I Can Series",
+    //             amount: {
+    //               value: getBasketTotal(basket),
+    //             },
+    //           },
+    //         ],
+    //       });
+    //     },
+    //     onApprove: async (data, actions, err) => {
+    //       if (err) {
+    //         console.log(err);
+    //       }
+    //       const details = await actions.order.capture();
+    //       console.log("THESE ARE THE DEATILS", details);
+    //       console.log("THESE ARE THE DATA", data);
+    //       if (details.status === "COMPLETED") {
+    //         await database
+    //           .collection("users")
+    //           .doc(user.uid)
+    //           .collection("orders")
+    //           .doc(details.id)
+    //           .set({
+    //             paymentMethod: "PayPal",
+    //             basket: basket,
+    //             amount: details.purchase_units[0].amount.value,
+    //             created: details.update_time,
+    //           });
+    //         toast("Success! Please visit the Dashboard to get reading!", {
+    //           type: "success",
+    //         });
+    //         startSetOrders();
+    //         emptyBasket();
+    //         history.replace("/orders");
+    //       }
+    //     },
+    //     onCancel: () => {
+    //       toast("Something went wrong", { type: "error" });
+    //     },
+    //     onError: (err) => {
+    //       toast("Something went wrong", { type: "error" });
+    //       console.log(err);
+    //     },
+    //   })
+    //   .render(paypal.current);
 
     basket?.forEach((each) => {
       basketSubscription.push(each.item.id);
@@ -287,6 +294,11 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
     setError(e.error ? e.error.message : "");
   };
 
+  const oneTimePaypalPayment = async () => {
+    const response = await axios.post("/v2/checkout/orders");
+    console.log("LOOK AT THIS", response);
+  };
+
   return (
     <div>
       <h1>CHECKOUT ({basket?.length} Items)</h1>
@@ -338,6 +350,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
         {error && <div>{error}</div>}
         <div ref={paypal}></div>
       </form>
+      <button onClick={oneTimePaypalPayment}>PayPal PAYMENT</button>
     </div>
   );
 };
