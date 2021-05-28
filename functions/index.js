@@ -20,7 +20,7 @@ const app = express();
 
 // Middlewares
 
-app.use(cors({ origin: true }));
+app.use(cors({ origin: "https://the-i-can-series.web.app" }));
 app.use(express.json());
 
 //API routes
@@ -93,6 +93,7 @@ app.post("/payments/sub", async (req, res) => {
 });
 
 app.post("/v1/oauth2/token/", cors(), async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "https://the-i-can-series.web.app");
   var data = qs.stringify({
     grant_type: "client_credentials",
   });
@@ -101,7 +102,7 @@ app.post("/v1/oauth2/token/", cors(), async (req, res) => {
     method: "post",
     url: "https://api-m.sandbox.paypal.com/v1/oauth2/token/",
     headers: {
-      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app/",
+      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app",
       Authorization:
         "Basic QWQwTXdHLTJ6SV9qRUdOeGNSOGx1ZkRGR3RyT1UwZEpXVnFLS3NaaHZ1cm91cFFaekZNSEJMaXVLMG1EbnpuNF9HYl9ibGJ3XzhYN3VhdEo6RU5SdWMwcU9iVlBUVDJlR01XUEFSeExndkJDSnRZaUlLd0RvckdaSjRUamJvdXZjWnR0dm9EbjA3MTQ2cFZWenIxeTFZZThzMjJDUGVrd2w=",
       "Content-Type": "application/x-www-form-urlencoded",
@@ -122,6 +123,7 @@ app.post("/v1/oauth2/token/", cors(), async (req, res) => {
 
 app.post("/v2/checkout/orders/", cors(), async (req, res) => {
   console.log("yuuuup");
+  res.set("Access-Control-Allow-Origin", "https://the-i-can-series.web.app");
 
   var data = JSON.stringify({
     intent: "CAPTURE",
@@ -142,7 +144,7 @@ app.post("/v2/checkout/orders/", cors(), async (req, res) => {
     method: "post",
     url: "https://api-m.sandbox.paypal.com/v2/checkout/orders/",
     headers: {
-      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app/",
+      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app",
       "Content-Type": "application/json",
       Authorization: `Bearer ${bearerToken}`,
     },
@@ -156,7 +158,7 @@ app.post("/v2/checkout/orders/", cors(), async (req, res) => {
     method: "get",
     url: response.data.links[1].href,
     headers: {
-      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app/",
+      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app",
       "Content-Type": "application/json",
       Authorization: `Bearer ${bearerToken}`,
     },
@@ -170,6 +172,7 @@ app.post("/v2/checkout/orders/", cors(), async (req, res) => {
 });
 
 app.post(`/v2/checkout/orders/:id/capture/`, cors(), async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "https://the-i-can-series.web.app");
   console.log("IN THIS BITCH");
   console.log("this da req", req);
 
@@ -189,7 +192,7 @@ app.post(`/v2/checkout/orders/:id/capture/`, cors(), async (req, res) => {
     method: "post",
     url: `https://api.sandbox.paypal.com/v2/checkout/orders/${req.params.id}/capture/`,
     headers: {
-      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app/",
+      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app",
       "Content-Type": "application/json",
       Authorization: `Bearer ${bearerToken}`,
     },

@@ -2,10 +2,10 @@ import axios from "axios";
 
 const instance = axios.create({
   headers: {
-    "Access-Control-Allow-Origin": "https://the-i-can-series.web.app/",
-    "Access-Control-Allow-Headers": "https://the-i-can-series.web.app/",
+    "Access-Control-Allow-Origin": "https://the-i-can-series.web.app",
+    "Access-Control-Allow-Headers": "https://the-i-can-series.web.app",
   },
-  baseURL: "https://us-central1-the-i-can-series.cloudfunctions.net/api/", //URL of API,
+  baseURL: "https://us-central1-the-i-can-series.cloudfunctions.net/api", //URL of API,
 });
 
 export default instance;
