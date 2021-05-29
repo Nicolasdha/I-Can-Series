@@ -15,6 +15,7 @@ import { auth, firebase } from "./firebase/firebase";
 import { login, logout } from "./actions/auth";
 import LoadingPage from "./components/LoadingPage";
 import { startReadCharacters } from "./actions/character";
+import { startSetBearerTokenRedux } from "./actions/bearerToken";
 
 import { startSetOrders } from "./actions/orders";
 const store = configureStore();
@@ -39,6 +40,7 @@ const setProfile = async () => {
   // WHY IS THIS EVEN HERE? CANT READ THE STUFF UNTIL THERES A USER, originally did so dashboard didnt re read everytime
   await store.dispatch(startReadCharacters());
   await store.dispatch(startSetOrders());
+  await store.dispatch(startSetBearerTokenRedux());
 };
 
 const renderApp = async () => {

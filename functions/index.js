@@ -7,7 +7,7 @@ const stripe = require("stripe")(
   "sk_test_51InSTbLFkWX2uXtIVmyMP9VdvfWR11IiGAkTxzdHtJ22wAoIk3FGx9WizSuUGU6uviVeIwTUH0HnNINoSHrLJ48800GHIMsM8r"
 );
 
-let bearerToken;
+let payPalLink;
 
 var corsOptions = {
   origin: ["http://localhost:3000", "http://localhost:5001"],
@@ -20,7 +20,11 @@ const app = express();
 
 // Middlewares
 
-app.use(cors({ origin: "https://the-i-can-series.web.app" }));
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://the-i-can-series.web.app"],
+  })
+);
 app.use(express.json());
 
 //API routes
@@ -94,6 +98,7 @@ app.post("/payments/sub", async (req, res) => {
 
 app.post("/v1/oauth2/token/", cors(), async (req, res) => {
   res.set("Access-Control-Allow-Origin", "https://the-i-can-series.web.app");
+  res.set("Access-Control-Allow-Origin", "http://localhost:3000");
   var data = qs.stringify({
     grant_type: "client_credentials",
   });
@@ -112,9 +117,7 @@ app.post("/v1/oauth2/token/", cors(), async (req, res) => {
 
   axios(config)
     .then(function (response) {
-      // console.log(response);
-      bearerToken = response.data.access_token;
-      res.status(201).send(bearerToken);
+      res.status(201).send(response.data.access_token);
     })
     .catch(function (error) {
       console.log(error);
@@ -122,8 +125,11 @@ app.post("/v1/oauth2/token/", cors(), async (req, res) => {
 });
 
 app.post("/v2/checkout/orders/", cors(), async (req, res) => {
+  console.log(">>>>>>>> BEARER TOKEN 🥶", req.body.bearerToken);
+
   console.log("yuuuup");
   res.set("Access-Control-Allow-Origin", "https://the-i-can-series.web.app");
+  res.set("Access-Control-Allow-Origin", "http://localhost:3000");
 
   var data = JSON.stringify({
     intent: "CAPTURE",
@@ -131,7 +137,7 @@ app.post("/v2/checkout/orders/", cors(), async (req, res) => {
       {
         amount: {
           currency_code: "USD",
-          value: "1900.00",
+          value: "123.00",
         },
       },
     ],
@@ -144,37 +150,51 @@ app.post("/v2/checkout/orders/", cors(), async (req, res) => {
     method: "post",
     url: "https://api-m.sandbox.paypal.com/v2/checkout/orders/",
     headers: {
-      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app",
+      "Access-Control-Allow-Origin":
+        "https://the-i-can-series.web.app, https://www.sandbox.paypal.com, https://us-central1-the-i-can-series.cloudfunctions.net, http://localhost:3000, https://api-m.sandbox.paypal.com/",
+
       "Content-Type": "application/json",
-      Authorization: `Bearer ${bearerToken}`,
+      Authorization: `Bearer ${req.body.bearerToken}`,
     },
     data: data,
   };
 
   const response = await axios(config);
-  console.log(response.data);
+  payPalLink = response.data.links[1].href;
+  res.status(200).send(response.data.links[1].href);
+});
 
+// Working on this if above stays ok
+app.post("/v2/checkout/orders/auth", cors(), async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "https://the-i-can-series.web.app");
+  res.set("Access-Control-Allow-Origin", "http://localhost:3000");
+  console.log("CHRISTMAS 🐱");
   var config2 = {
     method: "get",
-    url: response.data.links[1].href,
+    url: payPalLink || req.body.newURL,
     headers: {
-      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app",
+      "Access-Control-Allow-Origin":
+        "https://the-i-can-series.web.app, https://www.sandbox.paypal.com, https://us-central1-the-i-can-series.cloudfunctions.net, http://localhost:3000, localhost:5001",
+
       "Content-Type": "application/json",
-      Authorization: `Bearer ${bearerToken}`,
+      Authorization: `Bearer ${req.body.bearerToken}`,
     },
   };
+  res.set("Access-Control-Allow-Origin", "http://localhost:3000");
 
   const response2 = await axios(config2);
   console.log("shittymcgrit", response2);
-  res.redirect(response2.config.url);
-  // console.log(res.config.url);
-  res.status(200).send();
+  console.log(response2.config.url);
+  // res.redirect(response2.config.url);
+
+  res.status(200).send(response2.config.url);
 });
 
 app.post(`/v2/checkout/orders/:id/capture/`, cors(), async (req, res) => {
   res.set("Access-Control-Allow-Origin", "https://the-i-can-series.web.app");
+  res.set("Access-Control-Allow-Origin", "http://localhost:3000");
   console.log("IN THIS BITCH");
-  console.log("this da req", req);
+  // console.log("this da req", req);
 
   var data = JSON.stringify({
     intent: "CAPTURE",
@@ -182,7 +202,7 @@ app.post(`/v2/checkout/orders/:id/capture/`, cors(), async (req, res) => {
       {
         amount: {
           currency_code: "USD",
-          value: "1900.00",
+          value: "123.00",
         },
       },
     ],
@@ -192,9 +212,10 @@ app.post(`/v2/checkout/orders/:id/capture/`, cors(), async (req, res) => {
     method: "post",
     url: `https://api.sandbox.paypal.com/v2/checkout/orders/${req.params.id}/capture/`,
     headers: {
-      "Access-Control-Allow-Origin": "https://the-i-can-series.web.app",
+      "Access-Control-Allow-Origin":
+        "https://the-i-can-series.web.app, https://www.sandbox.paypal.com, https://us-central1-the-i-can-series.cloudfunctions.net, http://localhost:3000, localhost:5001, http://localhost:5001",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${bearerToken}`,
+      Authorization: `Bearer ${req.body.bearerToken}`,
     },
     data: data,
   };

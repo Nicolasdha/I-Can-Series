@@ -11,11 +11,19 @@ import getBasketTotal from "../selectors/basketTotal";
 import axios from "../axios/axios";
 import { emptyBasket } from "../actions/basket";
 import { addOrder, startSetOrders } from "../actions/orders";
+import { setBearerTokenRedux } from "../actions/bearerToken";
 import { database } from "../firebase/firebase";
 
 toast.configure();
 
-const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
+const Payment = ({
+  basket,
+  emptyBasket,
+  user,
+  addOrder,
+  startSetOrders,
+  setBearerTokenRedux,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const history = useHistory();
@@ -29,11 +37,27 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   const [disabledClientSecret, setDisabledClientSecret] = useState(true);
   const [succeeded, setsucceeded] = useState(false);
   const [basketSubscription, setBasketSubscription] = useState([]);
+  const [bearerToken, setBearerToken] = useState(null);
+
   useEffect(() => {
     const getBearerToken = async () => {
-      const bearerToken = await axios.post("/v1/oauth2/token");
-      console.log(bearerToken);
+      const bearerTokenAsync = await axios.post("/v1/oauth2/token");
+      console.log(bearerTokenAsync);
       //Want a piece of state for this?
+
+      setBearerToken(bearerTokenAsync.data);
+      setBearerTokenRedux(bearerTokenAsync.data);
+      await database
+        .collection("users")
+        .doc(user.uid)
+        .collection("bearerToken")
+        .doc(bearerTokenAsync.data)
+        .set({
+          bearerToken: bearerTokenAsync.data,
+        });
+      toast("Craptastic!", {
+        type: "success",
+      });
     };
     getBearerToken();
 
@@ -295,8 +319,17 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   };
 
   const oneTimePaypalPayment = async () => {
-    const response = await axios.post("/v2/checkout/orders");
+    const response = await axios.post("/v2/checkout/orders", {
+      bearerToken,
+    });
     console.log("LOOK AT THIS", response);
+    const secondResponse = await axios.post("/v2/checkout/orders/auth", {
+      bearerToken,
+      newURL: response.data,
+    });
+    console.log("LOOK AT THIS 2ns", secondResponse);
+
+    window.location = secondResponse.data;
   };
 
   return (
@@ -364,6 +397,8 @@ const mapDispatchToProps = (dispatch) => ({
   emptyBasket: () => dispatch(emptyBasket()),
   addOrder: (order) => dispatch(addOrder(order)),
   startSetOrders: () => dispatch(startSetOrders()),
+  setBearerTokenRedux: (bearerToken) =>
+    dispatch(setBearerTokenRedux(bearerToken)),
 });
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Payment);

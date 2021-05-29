@@ -5,6 +5,7 @@ import characterReducer from "../reducers/character";
 import basketReducer from "../reducers/basket";
 import authReducer from "../reducers/auth";
 import ordersReducer from "../reducers/orders";
+import bearerTokenReducer from "../reducers/bearerToken";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -15,6 +16,7 @@ const store = () => {
       orders: ordersReducer,
       character: characterReducer,
       authentication: authReducer,
+      bearerToken: bearerTokenReducer,
     }),
     composeEnhancers(applyMiddleware(thunk))
   );
