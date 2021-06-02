@@ -12,6 +12,7 @@ import axios, { paypalStart } from "../axios/axios";
 import { emptyBasket } from "../actions/basket";
 import { addOrder, startSetOrders } from "../actions/orders";
 import { database } from "../firebase/firebase";
+let buttons;
 
 toast.configure();
 
@@ -29,6 +30,17 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
   const [disabledClientSecret, setDisabledClientSecret] = useState(true);
   const [succeeded, setsucceeded] = useState(false);
   const [basketSubscription, setBasketSubscription] = useState([]);
+
+  const subscriptionBasket = [
+    {
+      item: {
+        id: "subscription",
+        price: 200,
+        title: "Subscription",
+      },
+    },
+  ];
+
   useEffect(() => {
     // const getBearerToken = async () => {
     //   const bearerToken = await axios.post("/v1/oauth2/token");
@@ -37,57 +49,63 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
     // };
     // getBearerToken();
 
-    window.paypal
-      .Buttons({
-        style: {
-          shape: "pill",
-          color: "blue",
-          layout: "vertical",
-          label: "subscribe",
-        },
-        createSubscription: function (data, actions) {
-          return actions.subscription.create({
-            /* Creates the subscription */
-            plan_id: "P-6D95325839119752TMCOLDJY",
-            intent: "subscription",
-          });
-        },
-        onApprove: async (data, actions, error) => {
-          console.log("FUCKNI ERRORRRORRR", error);
-          try {
-            console.log(data);
-            console.log(actions);
-            await database
-              .collection("users")
-              .doc(user.uid)
-              .collection("orders")
-              .doc(data.subscriptionID)
-              .set({
-                paymentMethod: "PayPal Subscription",
-                basket: basket,
-                amount: 200.0,
-                created: new Date(),
-                subscriptionID: data.subscriptionID,
-              });
-            toast("Success! Please visit the Dashboard to get reading!", {
-              type: "success",
+    buttons = window.paypal.Buttons({
+      style: {
+        shape: "pill",
+        color: "blue",
+        layout: "vertical",
+        label: "subscribe",
+      },
+      createSubscription: function (data, actions) {
+        return actions.subscription.create({
+          /* Creates the subscription */
+          plan_id: "P-6D95325839119752TMCOLDJY",
+          intent: "subscription",
+        });
+      },
+      onApprove: async (data, actions, error) => {
+        console.log("FUCKNI ERRORRRORRR", error);
+        try {
+          console.log(data);
+          console.log(actions);
+          await database
+            .collection("users")
+            .doc(user.uid)
+            .collection("orders")
+            .doc(data.subscriptionID)
+            .set({
+              paymentMethod: "PayPal Subscription",
+              basket: [
+                {
+                  id: "subscription",
+                  price: 200,
+                  title: "Subscription",
+                },
+              ],
+              amount: 200.0,
+              created: new Date(),
+              subscriptionID: data.subscriptionID,
             });
-            startSetOrders();
-            emptyBasket();
-            history.replace("/orders");
-          } catch (error) {
-            console.log("IMA PIECE OF TOAST", error);
-          }
-        },
-        onCancel: () => {
-          toast("Something went wrong", { type: "error" });
-        },
-        onError: (err) => {
-          toast("Something went wrong", { type: "error" });
-          console.log("FUCKIN ERROR", err);
-        },
-      })
-      .render("#paypal-button-container-P-6D95325839119752TMCOLDJY");
+          toast("Success! Please visit the Dashboard to get reading!", {
+            type: "success",
+          });
+          startSetOrders();
+          emptyBasket();
+          window.location.replace("/orders");
+        } catch (error) {
+          console.log("IMA PIECE OF TOAST", error);
+        }
+      },
+      onCancel: () => {
+        toast("Something went wrong", { type: "error" });
+      },
+      onError: (err) => {
+        toast("Something went wrong", { type: "error" });
+        console.log("FUCKIN ERROR", err);
+      },
+    });
+    buttons.render("#paypal-button-container-P-6D95325839119752TMCOLDJY");
+    console.log("BUTTONS", buttons);
 
     basket?.forEach((each) => {
       basketSubscription.push(each.item.id);
@@ -105,7 +123,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
       };
       getClientSecret();
     }
-  }, [basket]);
+  }, []);
   //
   //
   //console.log("THE SECRET IS >>>>", clientSecret);
@@ -181,7 +199,13 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
                 .doc(result.paymentIntent.id)
                 .set({
                   paymentMethod: "Stripe Subscription",
-                  basket: basket,
+                  basket: [
+                    {
+                      id: "subscription",
+                      price: 200,
+                      title: "Subscription",
+                    },
+                  ],
                   amount: result.paymentIntent.amount,
                   created: result.paymentIntent.created,
                   subscriptionId: response.data.subscriptionId,
@@ -191,7 +215,9 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
               });
               startSetOrders();
               emptyBasket();
-              history.replace("/orders");
+
+              // window.location.replace("/orders");
+              window.location.replace("/orders");
             }
           });
       } else {
@@ -203,7 +229,7 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
           .doc(response.data.paymentIntent)
           .set({
             paymentMethod: "Stripe Subscription",
-            basket: basket,
+            basket: subscriptionBasket,
             amount: response.data.amount,
             created: response.data.created,
             subscriptionId: response.data.subscriptionId,
@@ -213,7 +239,8 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
         });
         startSetOrders();
         emptyBasket();
-        history.replace("/orders");
+
+        window.location.replace("/orders");
       }
     }
   };
@@ -259,13 +286,13 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
           .doc(paymentIntent.id)
           .set({
             paymentMethod: "Stripe",
-            basket: basket,
+            basket: subscriptionBasket,
             amount: paymentIntent.amount,
             created: paymentIntent.created,
           });
       })
       .then(() => {
-        history.replace("/orders");
+        window.location.replace("/orders");
         startSetOrders();
         emptyBasket();
       })
@@ -318,13 +345,13 @@ const Payment = ({ basket, emptyBasket, user, addOrder, startSetOrders }) => {
             thousandSeparator={true}
             prefix={"$"}
           />
-          <button
+          {/* <button
             disabled={
               processing || disabledClientSecret || disabledError || succeeded
             }
           >
             <span>{processing ? <p>Processing</p> : "Buy Now"}</span>
-          </button>
+          </button> */}
           <button
             disabled={processing || disabledError || succeeded}
             onClick={handleSubscription}

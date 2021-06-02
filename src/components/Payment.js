@@ -319,17 +319,29 @@ const Payment = ({
   };
 
   const oneTimePaypalPayment = async () => {
-    const response = await axios.post("/v2/checkout/orders", {
-      bearerToken,
-    });
-    console.log("LOOK AT THIS", response);
-    const secondResponse = await axios.post("/v2/checkout/orders/auth", {
-      bearerToken,
-      newURL: response.data,
-    });
-    console.log("LOOK AT THIS 2ns", secondResponse);
+    try {
+      await database
+        .collection("users")
+        .doc(user.uid)
+        .collection("basket")
+        .doc("PayPalBasket")
+        .set({ basket });
 
-    window.location = secondResponse.data;
+      const response = await axios.post("/v2/checkout/orders", {
+        bearerToken,
+        orderTotal: getBasketTotal(basket),
+      });
+      console.log("LOOK AT THIS", response);
+      const secondResponse = await axios.post("/v2/checkout/orders/auth", {
+        bearerToken,
+        newURL: response.data,
+      });
+      console.log("LOOK AT THIS 2ns", secondResponse);
+
+      window.location = secondResponse.data;
+    } catch (error) {
+      console.log("paypal onetime pay error", error);
+    }
   };
 
   return (

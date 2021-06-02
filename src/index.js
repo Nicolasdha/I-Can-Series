@@ -24,6 +24,8 @@ const promise = loadStripe(
   "pk_test_51InSTbLFkWX2uXtIaZFhkPe2jaq1jR4ZZMGDHyeCBuoiqOvHTc7wIgDByYId3XZZgaMc54pjW26yNF4tt02ZfXiO002BJqMF0t"
 );
 
+document.cookie = " SameSite=None; Secure";
+
 const jsx = (
   <React.StrictMode>
     <Provider store={store}>

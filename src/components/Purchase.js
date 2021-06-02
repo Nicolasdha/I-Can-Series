@@ -16,7 +16,19 @@ const Purchase = (props) => {
       <Link to="/subscription">
         <button>Learn more</button>
       </Link> */}
-
+      <div>
+        <div>
+          <h1>
+            Monthly subscription - Get access to exclusive content and all books
+          </h1>
+          <img src={book3} />
+          <h3>199.99</h3>
+          <Link to="/subscription">
+            <button>Purchase subscription</button>
+          </Link>
+          <br></br>
+        </div>
+      </div>
       <Product
         id="sleep"
         title="Time for Sleep Series - 7 Books on how to initiate bedtime"
@@ -31,13 +43,7 @@ const Purchase = (props) => {
         image={book2}
         key={2}
       />
-      <Product
-        id="subscription"
-        title="Monthly subscription - Get access to exclusive content and all books"
-        price={199.99}
-        image={book3}
-        key={3}
-      />
+
       <p>Basket length</p>
       <h3>{props.basket?.length}</h3>
       {
